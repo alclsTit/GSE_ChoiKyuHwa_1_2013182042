@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "Dependencies\glew.h"
+#include "Object.h"
 
 class Renderer
 {

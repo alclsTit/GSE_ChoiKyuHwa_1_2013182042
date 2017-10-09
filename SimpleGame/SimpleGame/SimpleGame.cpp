@@ -12,7 +12,7 @@ but WITHOUT ANY WARRANTY.
 #include <iostream>
 #include "Dependencies\glew.h"
 #include "Dependencies\freeglut.h"
-
+#include "Rectangle.h"
 #include "Renderer.h"
 
 Renderer *g_Renderer = NULL;
@@ -22,8 +22,19 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
+	// Initialize RectInfo
+	CRectangle rect;
+	rect.SetPosition(-150, 100, 0);
+	rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
+	rect.SetSquareLength(80);
+
 	// Renderer Test
-	g_Renderer->DrawSolidRect(0, 0, 0, 4, 1, 0, 1, 1);
+	// 사이즈는 픽셀단위로 맞춘다
+	g_Renderer->DrawSolidRect(
+		rect.GetPosition().GetPositionX(),rect.GetPosition().GetPositionY(),
+		rect.GetPosition().GetPositionZ(), rect.GetSquareLength(),
+		rect.GetRectColor().r, rect.GetRectColor().g,
+		rect.GetRectColor().b, rect.GetRectColor().a);
 
 	glutSwapBuffers();
 }
@@ -50,6 +61,8 @@ void SpecialKeyInput(int key, int x, int y)
 
 int main(int argc, char **argv)
 {
+#pragma region [GluInit]
+
 	// Initialize GL things
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -58,6 +71,8 @@ int main(int argc, char **argv)
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
+#pragma endregion
+
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{
 		std::cout << " GLEW Version is 3.0\n ";
@@ -74,11 +89,15 @@ int main(int argc, char **argv)
 		std::cout << "Renderer could not be initialized.. \n";
 	}
 
+#pragma region [LoopFunc]
+
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
 	glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
+
+#pragma endregion
 
 	glutMainLoop();
 
