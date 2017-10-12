@@ -8,6 +8,11 @@ private:
 	float m_height;
 	float m_size;
 
+	float m_velocity;
+	CVector3 m_vector3;
+	CVector3 m_curRectPos;
+	CVector3 m_preRectPos;
+
 public:
 	CRectangle();
 	~CRectangle();
@@ -22,5 +27,7 @@ public:
 	float GetRectWidth() const { return m_width; }
 	float GetRectHeight() const { return m_height; }
 	float GetSquareLength() const { return m_size; }
+
+	void MovePosPerUpdate(float objVel, float time);
 
 };

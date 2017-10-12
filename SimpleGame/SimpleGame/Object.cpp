@@ -6,6 +6,11 @@ Object::Object()
 {
 }
 
+//void Object::Update()
+//{
+//
+//}
+
 
 Object::~Object()
 {

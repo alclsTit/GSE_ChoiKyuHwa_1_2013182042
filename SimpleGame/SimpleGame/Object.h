@@ -24,4 +24,6 @@ public:
 	CVector3 GetPosition() const { return m_oPosition; }
 	Color GetColor() const { return m_oColor; }
 
+	//void Update();
+
 };

@@ -16,17 +16,12 @@ but WITHOUT ANY WARRANTY.
 #include "Renderer.h"
 
 Renderer *g_Renderer = NULL;
+CRectangle rect;
 
 void RenderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
-
-	// Initialize RectInfo
-	CRectangle rect;
-	rect.SetPosition(-150, 100, 0);
-	rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
-	rect.SetSquareLength(80);
 
 	// Renderer Test
 	// 사이즈는 픽셀단위로 맞춘다
@@ -39,8 +34,17 @@ void RenderScene(void)
 	glutSwapBuffers();
 }
 
+void InitRectPos()
+{
+	// Initialize RectInfo
+	rect.SetPosition(0, 100, 0);
+	rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
+	rect.SetSquareLength(80);
+}
+
 void Idle(void)
 {
+	rect.MovePosPerUpdate(0.01f, 1);
 	RenderScene();
 }
 
@@ -72,6 +76,8 @@ int main(int argc, char **argv)
 
 	glewInit();
 #pragma endregion
+
+	InitRectPos();
 
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{
