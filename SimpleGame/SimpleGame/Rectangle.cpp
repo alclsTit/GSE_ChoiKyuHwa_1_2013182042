@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Rectangle.h"
-#include <iostream>
-using namespace std;
 
 CRectangle::CRectangle()
 {

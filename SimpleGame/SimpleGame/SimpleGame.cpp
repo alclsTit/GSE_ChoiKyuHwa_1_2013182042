@@ -16,7 +16,8 @@ but WITHOUT ANY WARRANTY.
 #include "Renderer.h"
 
 Renderer *g_Renderer = NULL;
-CRectangle rect;
+CRectangle g_Rect;
+bool IsLButtonDown = false;
 
 void RenderScene(void)
 {
@@ -26,10 +27,10 @@ void RenderScene(void)
 	// Renderer Test
 	// 사이즈는 픽셀단위로 맞춘다
 	g_Renderer->DrawSolidRect(
-		rect.GetPosition().GetPositionX(),rect.GetPosition().GetPositionY(),
-		rect.GetPosition().GetPositionZ(), rect.GetSquareLength(),
-		rect.GetRectColor().r, rect.GetRectColor().g,
-		rect.GetRectColor().b, rect.GetRectColor().a);
+		g_Rect.GetPosition().GetPositionX(), g_Rect.GetPosition().GetPositionY(),
+		g_Rect.GetPosition().GetPositionZ(), g_Rect.GetSquareLength(),
+		g_Rect.GetRectColor().r, g_Rect.GetRectColor().g,
+		g_Rect.GetRectColor().b, g_Rect.GetRectColor().a);
 
 	glutSwapBuffers();
 }
@@ -37,20 +38,39 @@ void RenderScene(void)
 void InitRectPos()
 {
 	// Initialize RectInfo
-	rect.SetPosition(0, 100, 0);
-	rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
-	rect.SetSquareLength(80);
+	g_Rect.SetPosition(200, -100, 0);
+	g_Rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
+	g_Rect.SetSquareLength(80);
 }
+
 
 void Idle(void)
 {
-	rect.MovePosPerUpdate(0.01f, 1);
+	//auto past = chrono::system_clock::now();
+	g_Rect.MovePosPerUpdate(0.01f, 1);
 	RenderScene();
 }
 
+//button
+//GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON,GLUT_RIGHT_BUTTON
+//state
+//GLUT_UP, GLUT_DOWN
 void MouseInput(int button, int state, int x, int y)
 {
-	RenderScene();
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		IsLButtonDown = true;
+	}
+
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+	{
+		if (IsLButtonDown)
+		{
+			g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
+		}
+		IsLButtonDown = false;
+	}
+
 }
 
 void KeyInput(unsigned char key, int x, int y)
