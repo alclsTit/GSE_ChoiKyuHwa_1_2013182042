@@ -14,9 +14,11 @@ but WITHOUT ANY WARRANTY.
 #include "Dependencies\freeglut.h"
 #include "Rectangle.h"
 #include "Renderer.h"
+#include "SceneMgr.h"
 
 Renderer *g_Renderer = NULL;
 CRectangle g_Rect;
+CSceneMgr *CMgr;
 bool IsLButtonDown = false;
 
 void RenderScene(void)
@@ -24,13 +26,14 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
+	CMgr->Draw();
 	// Renderer Test
 	// 사이즈는 픽셀단위로 맞춘다
-	g_Renderer->DrawSolidRect(
-		g_Rect.GetPosition().GetPositionX(), g_Rect.GetPosition().GetPositionY(),
-		g_Rect.GetPosition().GetPositionZ(), g_Rect.GetSquareLength(),
-		g_Rect.GetRectColor().r, g_Rect.GetRectColor().g,
-		g_Rect.GetRectColor().b, g_Rect.GetRectColor().a);
+	//g_Renderer->DrawSolidRect(
+	//	g_Rect.GetPosition().GetPositionX(), g_Rect.GetPosition().GetPositionY(),
+	//	g_Rect.GetPosition().GetPositionZ(), g_Rect.GetSquareLength(),
+	//	g_Rect.GetRectColor().r, g_Rect.GetRectColor().g,
+	//	g_Rect.GetRectColor().b, g_Rect.GetRectColor().a);
 
 	glutSwapBuffers();
 }
@@ -38,16 +41,18 @@ void RenderScene(void)
 void InitRectPos()
 {
 	// Initialize RectInfo
-	g_Rect.SetPosition(200, -100, 0);
-	g_Rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
-	g_Rect.SetSquareLength(80);
+	//g_Rect.SetPosition(200, 125, 0);
+	//g_Rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
+	//g_Rect.SetSquareLength(80);
+	
+	CMgr->CreateRect();
 }
 
 
 void Idle(void)
 {
 	//auto past = chrono::system_clock::now();
-	g_Rect.MovePosPerUpdate(0.01f, 1);
+	CMgr->Update();
 	RenderScene();
 }
 
@@ -67,6 +72,8 @@ void MouseInput(int button, int state, int x, int y)
 		if (IsLButtonDown)
 		{
 			g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
+			CMgr->CreateRect();
+
 		}
 		IsLButtonDown = false;
 	}
@@ -97,7 +104,7 @@ int main(int argc, char **argv)
 	glewInit();
 #pragma endregion
 
-	InitRectPos();
+	CMgr = new CSceneMgr();
 
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{

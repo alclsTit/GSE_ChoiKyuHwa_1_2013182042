@@ -13,5 +13,9 @@ public:
 	float GetPositionX() const { return x; }
 	float GetPositionY() const { return y; }
 	float GetPositionZ() const { return z; }
+
+	void SetPositionX(float s_x) { x = s_x; }
+	void SetPositionY(float s_y) { y = s_y; }
+	void SetPositionZ(float s_z) { z = s_z; }
 	CVector3 Normalized(const CVector3& v) const;
 };

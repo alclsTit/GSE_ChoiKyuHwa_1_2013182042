@@ -9,6 +9,8 @@ private:
 	float m_size;
 
 	float m_velocity;
+	float m_dir = 1;
+
 	CVector3 m_vector3;
 	CVector3 m_curRectPos;
 	CVector3 m_preRectPos;
@@ -28,6 +30,6 @@ public:
 	float GetRectHeight() const { return m_height; }
 	float GetSquareLength() const { return m_size; }
 
-	void MovePosPerUpdate(float objVel, float time);
+	virtual void MovePosPerUpdate(CVector3& vec, float objVel, float time);
 
 };

@@ -8,4 +8,5 @@
 #include <chrono>
 #include <iostream>
 
+#define MAX_OBJECTS_COUNT 50
 using namespace std;
