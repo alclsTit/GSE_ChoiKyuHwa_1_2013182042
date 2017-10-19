@@ -10,12 +10,11 @@ class CSceneMgr
 private:
 	CRectangle m_Rect;
 	vector<CRectangle> m_rectVec;
-	Renderer *m_Render = nullptr;
 public:
 	CSceneMgr();
 	void CreateRect();
 	void Update();
-	void Draw();
+	void Draw(Renderer *render);
 	int GetCurRectNum() const { return m_rectVec.size(); }
 	~CSceneMgr();
 };

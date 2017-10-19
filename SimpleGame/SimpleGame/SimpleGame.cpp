@@ -18,7 +18,7 @@ but WITHOUT ANY WARRANTY.
 
 Renderer *g_Renderer = NULL;
 CRectangle g_Rect;
-CSceneMgr *CMgr;
+CSceneMgr *CMgr = new CSceneMgr();
 bool IsLButtonDown = false;
 
 void RenderScene(void)
@@ -26,7 +26,7 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
-	CMgr->Draw();
+	CMgr->Draw(g_Renderer);
 	// Renderer Test
 	// 사이즈는 픽셀단위로 맞춘다
 	//g_Renderer->DrawSolidRect(
@@ -71,7 +71,7 @@ void MouseInput(int button, int state, int x, int y)
 	{
 		if (IsLButtonDown)
 		{
-			g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
+			//g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
 			CMgr->CreateRect();
 
 		}
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 		std::cout << "GLEW 3.0 not supported\n ";
 	}
 
-	// Initialize Renderer
+	//Initialize Renderer
 	g_Renderer = new Renderer(500, 500);
 	if (!g_Renderer->IsInitialized())
 	{

@@ -6,7 +6,13 @@
 
 CSceneMgr::CSceneMgr()
 {
-	m_Render = NULL;
+	// Initialize Renderer
+	//m_Render = new Renderer(500, 500);
+	//if (!m_Render->IsInitialized())
+	//{
+	//	std::cout << "Renderer could not be initialized.. \n";
+	//}
+
 }
 
 void CSceneMgr::CreateRect()
@@ -21,7 +27,7 @@ void CSceneMgr::CreateRect()
 		uniform_real_distribution<float> rn_pos_x(-MIN_RAND_POS, MAX_RAND_POS);
 		uniform_real_distribution<float> rn_pos_y(-MIN_RAND_POS, MAX_RAND_POS);
 
-		m_Rect.SetRectColor(0.0f, 0.0f, 0.0f, 1.0f);
+		m_Rect.SetRectColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_Rect.SetRectPosition(rn_pos_x(dre), rn_pos_y(dre), 0.0f);
 		m_Rect.SetSquareLength(40);
 
@@ -39,11 +45,11 @@ void CSceneMgr::Update()
 	}
 }
 
-void CSceneMgr::Draw()
+void CSceneMgr::Draw(Renderer *render)
 {
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
-		m_Render->DrawSolidRect(
+		render->DrawSolidRect(
 			m_rectVec[i].GetRectPosition().GetPositionX(), m_rectVec[i].GetPosition().GetPositionY(),
 			m_rectVec[i].GetPosition().GetPositionZ(), m_rectVec[i].GetSquareLength(),
 			m_rectVec[i].GetRectColor().r, m_rectVec[i].GetRectColor().g,
