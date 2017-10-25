@@ -7,9 +7,10 @@
 
 class CSceneMgr
 {
+
 private:
-	CRectangle m_Rect;
-	vector<CRectangle> m_rectVec;
+	vector<CRectangle *> m_rectVec;
+
 public:
 	CSceneMgr();
 	void CreateRect();

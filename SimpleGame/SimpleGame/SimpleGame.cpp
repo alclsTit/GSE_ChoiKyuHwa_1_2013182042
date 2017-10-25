@@ -41,11 +41,7 @@ void RenderScene(void)
 void InitRectPos()
 {
 	// Initialize RectInfo
-	//g_Rect.SetPosition(200, 125, 0);
-	//g_Rect.SetRectColor(1.0f, 0.0f, 0.0f, 0.0f);
-	//g_Rect.SetSquareLength(80);
-	
-	CMgr->CreateRect();
+	//CMgr->CreateRect();
 }
 
 
@@ -73,6 +69,7 @@ void MouseInput(int button, int state, int x, int y)
 		{
 			//g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
 			CMgr->CreateRect();
+			
 
 		}
 		IsLButtonDown = false;
