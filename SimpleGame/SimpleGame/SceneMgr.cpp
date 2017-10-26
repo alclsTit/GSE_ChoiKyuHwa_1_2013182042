@@ -1,17 +1,13 @@
 #include "stdafx.h"
 #include "SceneMgr.h"
 
-#define MIN_RAND_POS -200
-#define MAX_RAND_POS 200
-
 CSceneMgr::CSceneMgr()
 {
-
+	m_objColl = new CObjectCollision();
 }
 
-void CSceneMgr::CreateRect()
+void CSceneMgr::CreateRect(float posX, float posY)
 {
-	//int r_x, r_y = 0;
 	if (m_rectVec.size() > MAX_OBJECTS_COUNT)
 	{
 		cout << "더 이상 객체를 생성할 수 없습니다." << endl;
@@ -20,49 +16,58 @@ void CSceneMgr::CreateRect()
 	{
 		CRectangle * rect;
 		rect = new CRectangle(
-			200 - rand() % 400, 200 - rand() % 400, 1.0f,
+			posX - 250.0f, -posY + 500.0f - 250.0f , 1.0f,
 			0.0f, 0.0f, 0.0f, 1.0f,
 			40.0f
 		);
-
-		//rect->SetObjectColor(0.0f, 0.0f, 0.0f, 1.0f);
 		rect->SetObjectDirection((1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
 								 (1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
 								  1.0f);
-
-		//rect->SetObjectPos(200 - rand() % 400, 200 - rand() % 400, 1.0f);
-		rect->SetObjectSpeed(0.01f);
-		//rect->SetRectLength(40.0f);
-		
+		rect->SetObjectSpeed(500.0f);
+		rect->SetObjectLife(1000.0f);
+	
 		m_rectVec.push_back(rect);
-		//default_random_engine dre;
-		//dre.seed(time(nullptr));
-
-		//uniform_int_distribution<int> rn_x(MIN_RAND_POS, MAX_RAND_POS);
-		//uniform_int_distribution<int> rn_y(MIN_RAND_POS, MAX_RAND_POS);
-
-		//r_x = rn_x(dre);
-		//r_y = rn_y(dre);
-
-		//m_Rect.SetRectColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//m_Rect.SetRectPosition(r_x, r_y, 0.0f);
-		//m_Rect.SetSquareLength(40);
-		//m_Rect.SetDirection((1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
-		//					(1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
-		//					1.0f);
-		//
-		//m_rectVec.push_back(m_Rect);
 	}
 
 }
 
-void CSceneMgr::Update()
+void CSceneMgr::Update(float elapsedTime)
 {
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
-		//CVector3 tempVec = m_rectVec[i].GetRectPosition();
-		//m_rectVec[i].MovePosPerUpdate(m_rectVec[i],0.01f, 1.0f);
-		m_rectVec[i]->Update();
+		m_rectVec[i]->Update(elapsedTime);
+		m_rectVec[i]->SetObjectColor(0.0f, 0.0f, 0.0f, 1.0f);
+	}
+
+	for (int i = 0; i < m_rectVec.size(); ++i)
+	{
+		for (int j = 0; j < m_rectVec.size(); ++j)
+		{
+			if (i != j && m_rectVec.size() >= 2)
+			{
+				if (m_objColl->SquareEachCollision(m_rectVec[i]->GetObjectPosXYZ(),
+					m_rectVec[j]->GetObjectPosXYZ(),
+					m_rectVec[i]->GetSquareSize()))
+				{
+					m_rectVec[i]->SetObjectColor(1.0f, 0.0f, 0.0f, 1.0f);
+					m_rectVec[i]->SetObjectLife(m_rectVec[i]->GetObjectLife() - 1);
+					//m_rectVec[j]->SetObjectColor(1.0f, 0.0f, 0.0f, 1.0f);			
+				}	
+			}
+		}
+	}
+
+	
+	//vector<CRectangle*>::iterator iter = m_rectVec.begin();
+	if (m_rectVec.size() >= 1)
+	{
+		for (auto iter = m_rectVec.begin(); iter != m_rectVec.end(); ++iter)
+		{
+			if ((*iter)->GetObjectLife() <= 0)
+			{
+				iter = m_rectVec.erase(iter);
+			}
+		}
 	}
 }
 
@@ -76,11 +81,6 @@ void CSceneMgr::Draw(Renderer *render)
 			m_rectVec[i]->GetObjectColorRGBA().r, m_rectVec[i]->GetObjectColorRGBA().g,
 			m_rectVec[i]->GetObjectColorRGBA().b, m_rectVec[i]->GetObjectColorRGBA().a
 		);
-		//render->DrawSolidRect(
-		//	m_rectVec[i].GetRectPosition().GetPositionX(), m_rectVec[i].GetPosition().GetPositionY(),
-		//	m_rectVec[i].GetPosition().GetPositionZ(), m_rectVec[i].GetSquareLength(),
-		//	m_rectVec[i].GetRectColor().r, m_rectVec[i].GetRectColor().g,
-		//	m_rectVec[i].GetRectColor().b, m_rectVec[i].GetRectColor().a);
 	}
 }
 

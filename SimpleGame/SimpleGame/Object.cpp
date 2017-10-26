@@ -66,6 +66,11 @@ void Object::SetObjectColor(const Color & color4f)
 	m_oColor = color4f;
 }
 
+void Object::SetObjectLife(float life)
+{
+	m_life = life;
+}
+
 float Object::GetObjectPosX() const
 {
 	return m_vec3fPos.x;
@@ -91,6 +96,11 @@ Color Object::GetObjectColorRGBA() const
 	return m_oColor;
 }
 
-void Object::Update(float fTime)
+float Object::GetObjectLife() const
+{
+	return m_life;
+}
+
+void Object::Update(float elapsedTime)
 {
 }

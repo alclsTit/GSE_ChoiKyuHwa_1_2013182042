@@ -18,6 +18,7 @@ protected:
 	Color m_oColor;
 	float m_fVelocity;
 	Vec3f m_vec3fDir;
+	float m_life;
 
 public:
 	Object();
@@ -33,15 +34,17 @@ public:
 	void SetObjectSpeed(float speed);
 	void SetObjectColor(float r, float g, float b, float alpha);
 	void SetObjectColor(const Color& color4f);
+	void SetObjectLife(float life);
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
 	float GetObjectPosZ() const;
 	Vec3f GetObjectPosXYZ() const;
 	Color GetObjectColorRGBA() const;
+	float GetObjectLife() const;
 	
 
-	virtual void Update(float fTime = 1.0f);
+	virtual void Update(float elapsedTime);
 
 	//void SetColor(float r, float g, float b, float alpha) { m_oColor.r = r; m_oColor.g = g; m_oColor.b = b; m_oColor.a = alpha; }
 	//CVector3 GetPosition() const { return m_oPosition; }

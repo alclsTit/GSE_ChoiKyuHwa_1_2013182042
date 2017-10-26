@@ -16,40 +16,41 @@ but WITHOUT ANY WARRANTY.
 #include "Renderer.h"
 #include "SceneMgr.h"
 
+//¾ø¾î¾ßµÊ
 Renderer *g_Renderer = NULL;
-CRectangle g_Rect;
-CSceneMgr *CMgr = new CSceneMgr();
+
+CSceneMgr *CMgr = NULL;
+
 bool IsLButtonDown = false;
+
+DWORD g_PrevTime;
 
 void RenderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
+	DWORD curTime = timeGetTime();
+	DWORD elapsedTime = curTime - g_PrevTime;
+	g_PrevTime = curTime;
+
+	CMgr->Update((float)elapsedTime);
+
 	CMgr->Draw(g_Renderer);
-	// Renderer Test
-	// »çÀÌÁî´Â ÇÈ¼¿´ÜÀ§·Î ¸ÂÃá´Ù
-	//g_Renderer->DrawSolidRect(
-	//	g_Rect.GetPosition().GetPositionX(), g_Rect.GetPosition().GetPositionY(),
-	//	g_Rect.GetPosition().GetPositionZ(), g_Rect.GetSquareLength(),
-	//	g_Rect.GetRectColor().r, g_Rect.GetRectColor().g,
-	//	g_Rect.GetRectColor().b, g_Rect.GetRectColor().a);
 
 	glutSwapBuffers();
 }
 
 void InitRectPos()
 {
-	// Initialize RectInfo
-	//CMgr->CreateRect();
+
 }
 
 
 void Idle(void)
 {
-	//auto past = chrono::system_clock::now();
-	CMgr->Update();
 	RenderScene();
+
 }
 
 //button
@@ -68,10 +69,9 @@ void MouseInput(int button, int state, int x, int y)
 		if (IsLButtonDown)
 		{
 			//g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
-			CMgr->CreateRect();
-			
-
+			CMgr->CreateRect(static_cast<float>(x),static_cast<float>(y));		
 		}
+
 		IsLButtonDown = false;
 	}
 
@@ -100,9 +100,7 @@ int main(int argc, char **argv)
 
 	glewInit();
 #pragma endregion
-
-	CMgr = new CSceneMgr();
-
+	
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{
 		std::cout << " GLEW Version is 3.0\n ";
@@ -113,6 +111,7 @@ int main(int argc, char **argv)
 	}
 
 	//Initialize Renderer
+	CMgr = new CSceneMgr();
 	g_Renderer = new Renderer(500, 500);
 	if (!g_Renderer->IsInitialized())
 	{
@@ -126,8 +125,11 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
+	
 
 #pragma endregion
+
+	g_PrevTime = timeGetTime();
 
 	glutMainLoop();
 
