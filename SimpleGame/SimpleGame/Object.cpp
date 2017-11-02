@@ -71,6 +71,11 @@ void Object::SetObjectLife(float life)
 	m_life = life;
 }
 
+void Object::SetObjectType(Type objtype)
+{
+	m_objectType = objtype;
+}
+
 float Object::GetObjectPosX() const
 {
 	return m_vec3fPos.x;
@@ -99,6 +104,11 @@ Color Object::GetObjectColorRGBA() const
 float Object::GetObjectLife() const
 {
 	return m_life;
+}
+
+Type Object::GetObjectType() const
+{
+	return m_objectType;
 }
 
 void Object::Update(float elapsedTime)

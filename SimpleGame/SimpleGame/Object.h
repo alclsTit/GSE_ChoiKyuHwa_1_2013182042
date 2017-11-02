@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "Vector.h"
 
+
+
 struct Color
 {
 	float r;
@@ -19,6 +21,7 @@ protected:
 	float m_fVelocity;
 	Vec3f m_vec3fDir;
 	float m_life;
+	Type m_objectType;
 
 public:
 	Object();
@@ -35,6 +38,7 @@ public:
 	void SetObjectColor(float r, float g, float b, float alpha);
 	void SetObjectColor(const Color& color4f);
 	void SetObjectLife(float life);
+	void SetObjectType(Type objtype);
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
@@ -42,6 +46,7 @@ public:
 	Vec3f GetObjectPosXYZ() const;
 	Color GetObjectColorRGBA() const;
 	float GetObjectLife() const;
+	Type GetObjectType() const;
 	
 
 	virtual void Update(float elapsedTime);
