@@ -36,7 +36,7 @@ void RenderScene(void)
 
 	CMgr->Update((float)elapsedTime);
 
-	CMgr->Draw(g_Renderer);
+	CMgr->Draw();
 
 	glutSwapBuffers();
 }

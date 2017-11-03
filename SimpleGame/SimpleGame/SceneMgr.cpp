@@ -3,6 +3,7 @@
 
 CSceneMgr::CSceneMgr()
 {
+	m_render = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
 	m_objColl = new CObjectCollision();
 	this->CreateBuilding();
 }
@@ -21,6 +22,7 @@ void CSceneMgr::CreateBullet()
 		1.0f);
 	bullet->SetObjectSpeed(300.0f);
 	bullet->SetObjectLife(20);
+	bullet->SetObjectLifeTime(500);
 	bullet->SetObjectType(Type::OBJECT_BULLET);
 
 	m_rectVec.push_back(bullet);
@@ -39,6 +41,7 @@ void CSceneMgr::CreateBuilding()
 	m_building->SetObjectDirection(0.0f, 0.0f, 1.0f);
 	m_building->SetObjectSpeed(0.0f);
 	m_building->SetObjectLife(500);
+	m_building->SetObjectLifeTime(5000);
 	m_building->SetObjectType(Type::OBJECT_BUILDING);
 
 	m_rectVec.push_back(m_building);
@@ -65,6 +68,7 @@ void CSceneMgr::CreateCharacter(float posX, float posY)
 		rect->SetObjectSpeed(300.0f);
 		rect->SetObjectLife(10);
 		rect->SetObjectType(Type::OBJECT_CHARACTER);
+		rect->SetObjectLifeTime(1000);
 
 		m_rectVec.push_back(rect);
 	}
@@ -73,15 +77,34 @@ void CSceneMgr::CreateCharacter(float posX, float posY)
 
 void CSceneMgr::Update(float elapsedTime)
 {
-	//m_TotalETime += static_cast<int>(elapsedTime) % 1000;
-	//if (static_cast<int>(m_TotalETime) % 1000 == 0)
-	//{
-	//	cout << "왕" << endl;
-	//}
+	// 주기적으로 모든 오브젝트들의 hp가 1씩 감소한다.
+	m_hpDownTerm += elapsedTime * 100;
+	if (m_hpDownTerm >= 60000)
+	{
+		for (int i = 0; i < m_rectVec.size(); ++i)
+		{
+			m_rectVec[i]->SetObjectLife(m_rectVec[i]->GetObjectLife() - 1);
+		}
 
+		for (int i = 0; i < m_rectVec.size(); ++i)
+		{
+			if (m_rectVec[i]->GetObjectLifeTime() < 0)
+			{
+				m_rectVec[i]->SetObjectLife(0);
+			}
+			else
+			{
+				m_rectVec[i]->SetObjectLifeTime(
+					m_rectVec[i]->GetObjectLifeTime() - 100);
+			}
+		}
+
+		m_hpDownTerm = 0;
+	}
+
+	// 0.5초마다 붉은색상의 총알을 랜덤방향으로 생성한다.
 	m_dur += elapsedTime * 100;
-
-	if (m_dur >= 5000)
+	if (m_dur >= 30000)
 	{
 		this->CreateBullet();
 		m_dur = 0;
@@ -154,45 +177,25 @@ void CSceneMgr::Update(float elapsedTime)
 		}
 	}
 
-
-	
-
-	// 캐릭터와 빌딩간의 충돌
-	// 1. 캐릭터는 충돌 시 소멸
-	// 2. 빌딩은 충돌한 캐릭터의 라이프만큼 라이프가 깍임
-	//for (int i = 0; i < m_rectVec.size(); ++i)
-	//{
-	//	if (m_objColl->SquareOtherCollision(m_building->GetObjectPosXYZ(),
-	//		m_rectVec[i]->GetObjectPosXYZ(),
-	//		m_rectVec[i]->GetSquareSize(),
-	//		m_building->GetSquareSize()))
-	//	{
-	//		if (m_)
-	//	}
-	//}
-
-
-	
 	//vector<CRectangle*>::iterator iter = m_rectVec.begin();
-	if (m_rectVec.size() >= 2)
+	if (m_rectVec.size() >= 1)
 	{
-		for (auto iter = m_rectVec.begin(); iter != m_rectVec.end(); ++iter)
+		for (auto iter = m_rectVec.begin(); iter != m_rectVec.end();)
 		{
 			if ((*iter)->GetObjectLife() <= 0)
-			{
 				iter = m_rectVec.erase(iter);
-				if (*iter == nullptr)
-					break;
-			}
+			else
+				++iter;
+
 		}
 	}
 }
 
-void CSceneMgr::Draw(Renderer *render)
+void CSceneMgr::Draw()
 {
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
-		render->DrawSolidRect(
+		m_render->DrawSolidRect(
 			m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
 			m_rectVec[i]->GetSquareSize(),
 			m_rectVec[i]->GetObjectColorRGBA().r, m_rectVec[i]->GetObjectColorRGBA().g,

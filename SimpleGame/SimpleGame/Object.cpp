@@ -71,6 +71,11 @@ void Object::SetObjectLife(float life)
 	m_life = life;
 }
 
+void Object::SetObjectLifeTime(float lfTime)
+{
+	m_lifeTime = lfTime;
+}
+
 void Object::SetObjectType(Type objtype)
 {
 	m_objectType = objtype;
@@ -109,6 +114,11 @@ float Object::GetObjectLife() const
 Type Object::GetObjectType() const
 {
 	return m_objectType;
+}
+
+float Object::GetObjectLifeTime() const
+{
+	return m_lifeTime;
 }
 
 void Object::Update(float elapsedTime)

@@ -14,9 +14,9 @@ private:
 	CObjectCollision *m_objColl;
 	CRectangle *m_building;
 	bool m_flagOut{ false };
-	//int m_TotalETime{ 0};
 	int m_dur{ 0 };
-	Renderer *render;
+	int m_hpDownTerm{ 0 };
+	Renderer *m_render;
 
 public:
 	CSceneMgr();
@@ -24,7 +24,7 @@ public:
 	void CreateBuilding();
 	void CreateCharacter(float posX, float posY);
 	void Update(float elapsedTime);
-	void Draw(Renderer *render);
+	void Draw();
 	int GetCurRectNum() const { return m_rectVec.size(); }
 	~CSceneMgr();
 };

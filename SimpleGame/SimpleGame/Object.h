@@ -20,7 +20,10 @@ protected:
 	Color m_oColor;
 	float m_fVelocity;
 	Vec3f m_vec3fDir;
+
 	float m_life;
+	float m_lifeTime{ 1000 };
+
 	Type m_objectType;
 
 public:
@@ -38,6 +41,7 @@ public:
 	void SetObjectColor(float r, float g, float b, float alpha);
 	void SetObjectColor(const Color& color4f);
 	void SetObjectLife(float life);
+	void SetObjectLifeTime(float lfTime);
 	void SetObjectType(Type objtype);
 
 	float GetObjectPosX() const;
@@ -47,6 +51,7 @@ public:
 	Color GetObjectColorRGBA() const;
 	float GetObjectLife() const;
 	Type GetObjectType() const;
+	float GetObjectLifeTime() const;
 	
 
 	virtual void Update(float elapsedTime);
