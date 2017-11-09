@@ -16,12 +16,17 @@ private:
 	bool m_flagOut{ false };
 	int m_dur{ 0 };
 	int m_hpDownTerm{ 0 };
-	Renderer *m_render;
+	int m_putTag{ 0 };
 
+	Renderer *m_render;
+	GLuint m_texCharacter;
+
+	
 public:
 	CSceneMgr();
 	void CreateBullet();
 	void CreateBuilding();
+	void CreateArrow(CRectangle *rect);
 	void CreateCharacter(float posX, float posY);
 	void Update(float elapsedTime);
 	void Draw();

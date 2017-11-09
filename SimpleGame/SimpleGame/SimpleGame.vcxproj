@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ElapsedTime.h" />
+    <ClInclude Include="LoadPng.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectCollision.h" />
     <ClInclude Include="Rectangle.h" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ElapsedTime.cpp" />
+    <ClCompile Include="LoadPng.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectCollision.cpp" />
     <ClCompile Include="Rectangle.cpp" />
@@ -184,6 +186,10 @@
   <ItemGroup>
     <None Include="Shaders\SolidRect.fs" />
     <None Include="Shaders\SolidRect.vs" />
+    <None Include="Shaders\SolidRectWithTexture.fs" />
+    <None Include="Shaders\SolidRectWithTexture.vs" />
+    <None Include="Shaders\SolidRectWithTextureSeq.fs" />
+    <None Include="Shaders\SolidRectWithTextureSeq.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

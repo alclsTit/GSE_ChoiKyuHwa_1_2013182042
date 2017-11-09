@@ -26,6 +26,11 @@ protected:
 
 	Type m_objectType;
 
+	float m_arrowTime{ 0.0f };
+	bool  m_createArrow{ false };
+
+	int   m_tag{ 0 };
+
 public:
 	Object();
 	Object(const Vec3f& vec3f, const Color& color4f);
@@ -43,6 +48,9 @@ public:
 	void SetObjectLife(float life);
 	void SetObjectLifeTime(float lfTime);
 	void SetObjectType(Type objtype);
+	void SetObjectArrowCoolTime(float time);
+	void SetCreateArrowFlag(bool flag);
+	void SetCharacterTag(int tag);
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
@@ -52,7 +60,9 @@ public:
 	float GetObjectLife() const;
 	Type GetObjectType() const;
 	float GetObjectLifeTime() const;
-	
+	float GetArrowCoolTime() const;
+	bool GetCreateArrowFlag() const;
+	int GetCharacterTag() const;
 
 	virtual void Update(float elapsedTime);
 

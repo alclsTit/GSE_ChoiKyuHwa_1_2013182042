@@ -81,6 +81,27 @@ void Object::SetObjectType(Type objtype)
 	m_objectType = objtype;
 }
 
+void Object::SetObjectArrowCoolTime(float time)
+{
+	m_arrowTime += time;
+
+	if (m_arrowTime >= 300)
+	{
+		m_arrowTime = 0.0f;
+		this->SetCreateArrowFlag(true);
+	}
+}
+
+void Object::SetCreateArrowFlag(bool flag)
+{
+	m_createArrow = flag;
+}
+
+void Object::SetCharacterTag(int tag)
+{
+	m_tag = tag;
+}
+
 float Object::GetObjectPosX() const
 {
 	return m_vec3fPos.x;
@@ -119,6 +140,21 @@ Type Object::GetObjectType() const
 float Object::GetObjectLifeTime() const
 {
 	return m_lifeTime;
+}
+
+float Object::GetArrowCoolTime() const
+{
+	return 0.0f;
+}
+
+bool Object::GetCreateArrowFlag() const
+{
+	return m_createArrow;
+}
+
+int Object::GetCharacterTag() const
+{
+	return m_tag;
 }
 
 void Object::Update(float elapsedTime)
