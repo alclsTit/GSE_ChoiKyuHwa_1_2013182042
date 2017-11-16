@@ -53,15 +53,12 @@ RectLength CRectangle::GetRectSize() const
 
 void CRectangle::Update(float elapsedTime)
 {
-	auto newElapsedTime = elapsedTime / 1000.0f;
-	m_vec3fPos.x += m_vec3fDir.x * m_fVelocity * newElapsedTime;
-	m_vec3fPos.y += m_vec3fDir.y * m_fVelocity * newElapsedTime;
+	auto newElapsedTime = elapsedTime / 1500.0f;
 
 	//m_vec3fPos.z += m_vec3fDir.z * m_fVelocity * fTime;
 
 	if (m_vec3fPos.x >= WINDOW_WIDTH / 2 || m_vec3fPos.x <= -WINDOW_WIDTH / 2 )
 		m_vec3fDir.x = -m_vec3fDir.x;
-
 
 	if (m_vec3fPos.y >= WINDOW_HEIGHT / 2  || m_vec3fPos.y <= -WINDOW_HEIGHT / 2)
 		m_vec3fDir.y = -m_vec3fDir.y;
@@ -69,8 +66,12 @@ void CRectangle::Update(float elapsedTime)
 	if (m_vec3fPos.x >= WINDOW_WIDTH / 2 - GetSquareSize() / 2 || m_vec3fPos.x <= -WINDOW_WIDTH / 2 + GetSquareSize() / 2)
 		m_vec3fDir.x = -m_vec3fDir.x;
 	
-
 	if (m_vec3fPos.y >= WINDOW_HEIGHT / 2 - GetSquareSize() / 2 || m_vec3fPos.y <= -WINDOW_HEIGHT / 2 + GetSquareSize() / 2)
 		m_vec3fDir.y = -m_vec3fDir.y;
+
+	m_vec3fPos.x += m_vec3fDir.x * m_fVelocity * newElapsedTime;
+	m_vec3fPos.y += m_vec3fDir.y * m_fVelocity * newElapsedTime;
+
+
 }
 

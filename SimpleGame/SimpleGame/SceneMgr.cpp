@@ -18,7 +18,7 @@ void CSceneMgr::CreateBullet()
 	bullet = new CRectangle(
 		0.0f, 0.0f, 1.0f, 
 		1.0f, 0.0f, 0.0f, 1.0f,
-		5.0f
+		2
 	);
 
 	bullet->SetObjectDirection((1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
@@ -39,7 +39,7 @@ void CSceneMgr::CreateBuilding()
 	m_building = new CRectangle(
 		0.0f, 0.0f, 1.0f,
 		1.0f, 1.0f, 0.0f, 1.0f,
-		50.0f
+		50
 	);
 
 	m_building->SetObjectDirection(0.0f, 0.0f, 1.0f);
@@ -85,7 +85,7 @@ void CSceneMgr::CreateCharacter(float posX, float posY)
 		rect = new CRectangle(
 			posX - 250.0f, -posY + 500.0f - 250.0f , 1.0f,
 			1.0f, 1.0f, 1.0f, 1.0f,
-			10.0f
+			10
 		);
 		rect->SetObjectDirection((1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
 								 (1 - 2 * (rand() % 2)) * (rand() % 100 / 100.0f),
@@ -104,7 +104,7 @@ void CSceneMgr::CreateCharacter(float posX, float posY)
 
 void CSceneMgr::Update(float elapsedTime)
 {
-
+	/*
 	// 주기적으로 모든 오브젝트들의 hp가 1씩 감소한다.
 	m_hpDownTerm += elapsedTime * 100;
 	if (m_hpDownTerm >= 60000)
@@ -143,10 +143,11 @@ void CSceneMgr::Update(float elapsedTime)
 
 		m_hpDownTerm = 0;
 	}
+	*/
 
 	// 0.5초마다 붉은색상의 총알을 랜덤방향으로 생성한다.
 	m_dur += elapsedTime * 100;
-	if (m_dur >= 30000)
+	if (m_dur >= 55000)
 	{
 		this->CreateBullet();
 		m_dur = 0;
@@ -173,6 +174,7 @@ void CSceneMgr::Update(float elapsedTime)
 		
 	}
 
+	 int temp, other_temp;
 	// 캐릭터와 캐릭터 간의 충돌
 	// 1. 충돌 시 빨간색으로 바뀜
 	// 2. 충돌 데미지는 입지않음
@@ -192,7 +194,9 @@ void CSceneMgr::Update(float elapsedTime)
 				if (m_rectVec[i]->GetObjectType() == Type::OBJECT_BUILDING 
 					&& m_rectVec[j]->GetObjectType() == Type::OBJECT_CHARACTER)
 				{
-					m_rectVec[i]->SetObjectLife(m_rectVec[i]->GetObjectLife() - 10);
+					temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
+
+					m_rectVec[i]->SetObjectLife(temp);
 					m_rectVec[j]->SetObjectLife(0);
 					m_flagOut = true; break;
 				}
@@ -200,7 +204,9 @@ void CSceneMgr::Update(float elapsedTime)
 				if (m_rectVec[i]->GetObjectType() == Type::OBJECT_CHARACTER
 					&& m_rectVec[j]->GetObjectType() == Type::OBJECT_BUILDING)
 				{
-					m_rectVec[j]->SetObjectLife(m_rectVec[j]->GetObjectLife() - 10);
+					temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
+
+					m_rectVec[j]->SetObjectLife(temp);
 					m_rectVec[i]->SetObjectLife(0);
 					m_flagOut = true; break;
 				}
@@ -208,7 +214,9 @@ void CSceneMgr::Update(float elapsedTime)
 				if (m_rectVec[i]->GetObjectType() == Type::OBJECT_BULLET
 					&& m_rectVec[j]->GetObjectType() == Type::OBJECT_CHARACTER)
 				{
-					m_rectVec[j]->SetObjectLife(m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife());
+					temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
+
+					m_rectVec[j]->SetObjectLife(temp);
 					m_rectVec[i]->SetObjectLife(0);
 					m_flagOut = true; break;
 				}
@@ -216,7 +224,9 @@ void CSceneMgr::Update(float elapsedTime)
 				if (m_rectVec[i]->GetObjectType() == Type::OBJECT_CHARACTER
 					&& m_rectVec[j]->GetObjectType() == Type::OBJECT_BULLET)
 				{
-					m_rectVec[i]->SetObjectLife(m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife());
+					temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
+
+					m_rectVec[i]->SetObjectLife(temp);
 					m_rectVec[j]->SetObjectLife(0);
 					m_flagOut = true; break;
 				}
@@ -226,8 +236,8 @@ void CSceneMgr::Update(float elapsedTime)
 				{
 					if (m_rectVec[i]->GetCharacterTag() != m_rectVec[j]->GetCharacterTag()) 
 					{
-						int temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
-						int other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
+						temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
+						other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
 
 						m_rectVec[i]->SetObjectLife(temp);
 						m_rectVec[j]->SetObjectLife(other_temp);
@@ -240,8 +250,8 @@ void CSceneMgr::Update(float elapsedTime)
 				{
 					if (m_rectVec[i]->GetCharacterTag() != m_rectVec[j]->GetCharacterTag())
 					{
-						int temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
-						int other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
+						temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
+						other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
 
 						m_rectVec[i]->SetObjectLife(temp);
 						m_rectVec[j]->SetObjectLife(other_temp);
@@ -253,8 +263,8 @@ void CSceneMgr::Update(float elapsedTime)
 				if (m_rectVec[i]->GetObjectType() == Type::OBJECT_ARROW
 					&& m_rectVec[j]->GetObjectType() == Type::OBJECT_BUILDING)
 				{
-					int temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
-					int other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
+					temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
+					other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
 
 					m_rectVec[i]->SetObjectLife(temp);
 					m_rectVec[j]->SetObjectLife(other_temp);
@@ -264,8 +274,8 @@ void CSceneMgr::Update(float elapsedTime)
 				if (m_rectVec[i]->GetObjectType() == Type::OBJECT_BUILDING
 					&& m_rectVec[j]->GetObjectType() == Type::OBJECT_ARROW)
 				{
-					int temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
-					int other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
+					temp = m_rectVec[i]->GetObjectLife() - m_rectVec[j]->GetObjectLife();
+					other_temp = m_rectVec[j]->GetObjectLife() - m_rectVec[i]->GetObjectLife();
 
 					m_rectVec[i]->SetObjectLife(temp);
 					m_rectVec[j]->SetObjectLife(other_temp);
@@ -287,10 +297,6 @@ void CSceneMgr::Update(float elapsedTime)
 		{
 			if ((*iter)->GetObjectLife() <= 0)
 			{
-				if ((*iter)->GetObjectType() == Type::OBJECT_ARROW)
-				{
-					cout << "왕" << endl;
-				}
 				iter = m_rectVec.erase(iter);
 			}
 			else
@@ -321,17 +327,47 @@ void CSceneMgr::Draw()
 			);
 		}
 	}
-	
-
-	//render->DrawSolidRect(
-	//	m_building->GetObjectPosX(), m_building->GetObjectPosY(), m_building->GetObjectPosY(),
-	//	m_building->GetSquareSize(),
-	//	m_building->GetObjectColorRGBA().r, m_building->GetObjectColorRGBA().g,
-	//	m_building->GetObjectColorRGBA().b, m_building->GetObjectColorRGBA().a
-	//);
-
 }
 
 CSceneMgr::~CSceneMgr()
 {
 }
+
+
+/*
+if (m_rectVec[i]->GetObjectType() == Type::OBJECT_BUILDING)
+{
+if (m_rectVec[j]->GetObjectType() == Type::OBJECT_CHARACTER)
+{
+
+}
+else if (m_rectVec[j]->GetObjectType() == Type::OBJECT_ARROW)
+{
+
+}
+}
+
+if (m_rectVec[i]->GetObjectType() == Type::OBJECT_CHARACTER)
+{
+if (m_rectVec[j]->GetObjectType() == Type::OBJECT_BULLET)
+{
+
+}
+else if (m_rectVec[j]->GetObjectType() == Type::OBJECT_ARROW)
+{
+
+}
+}
+
+if (m_rectVec[i]->GetObjectType() == Type::OBJECT_CHARACTER)
+{
+if (m_rectVec[j]->GetObjectType() == Type::OBJECT_BULLET)
+{
+
+}
+else if (m_rectVec[j]->GetObjectType() == Type::OBJECT_ARROW)
+{
+
+}
+}
+*/
