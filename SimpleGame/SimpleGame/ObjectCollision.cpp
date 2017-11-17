@@ -26,8 +26,8 @@ bool CObjectCollision::SquareOtherCollision(const Vec3f & r1_cpos, const Vec3f &
 	int halfSize = size / 2;
 	int halfOSize = other_size / 2;
 
-	if (r1_cpos.x + halfOSize >= r2_cpos.x - halfSize && r1_cpos.x - halfOSize <= r2_cpos.x + halfSize
-		&& r1_cpos.y + halfOSize >= r2_cpos.y - halfSize && r1_cpos.y - halfOSize <= r2_cpos.y + halfSize)
+	if (r1_cpos.x + halfSize >= r2_cpos.x - halfOSize && r1_cpos.x - halfSize <= r2_cpos.x + halfOSize
+		&& r1_cpos.y + halfSize >= r2_cpos.y - halfOSize && r1_cpos.y - halfSize <= r2_cpos.y + halfOSize)
 	{
 		return true;
 	}

@@ -69,7 +69,8 @@ void MouseInput(int button, int state, int x, int y)
 		if (IsLButtonDown)
 		{
 			//g_Rect.SetPosition((float)(x-250), (float)(-y + 500 - 250), 0.0f);
-			CMgr->CreateCharacter(static_cast<float>(x),static_cast<float>(y));		
+			CMgr->CreateMyCharacter(static_cast<float>(x),static_cast<float>(y));		
+			
 		}
 
 		IsLButtonDown = false;
@@ -95,7 +96,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
@@ -112,7 +113,7 @@ int main(int argc, char **argv)
 
 	//Initialize Renderer
 	CMgr = new CSceneMgr();
-	g_Renderer = new Renderer(500, 500);
+	g_Renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	if (!g_Renderer->IsInitialized())
 	{

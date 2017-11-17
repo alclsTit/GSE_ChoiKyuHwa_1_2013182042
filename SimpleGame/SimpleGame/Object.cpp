@@ -36,7 +36,7 @@ void Object::SetObjectPos(float x, float y, float z)
 	m_vec3fPos = { x, y ,z };
 }
 
-void Object::SetObjectPos(const Vec3f & pos)
+void Object::SetObjectPos(const Vec3f& pos)
 {
 	m_vec3fPos = pos;
 }
@@ -46,7 +46,7 @@ void Object::SetObjectDirection(float x, float y, float z)
 	m_vec3fDir = { x, y ,z };
 }
 
-void Object::SetObjectDirection(const Vec3f & dir)
+void Object::SetObjectDirection(const Vec3f& dir)
 {
 	m_vec3fDir = dir;
 }
@@ -61,12 +61,12 @@ void Object::SetObjectColor(float r, float g, float b, float alpha)
 	m_oColor = { r, g, b, alpha };
 }
 
-void Object::SetObjectColor(const Color & color4f)
+void Object::SetObjectColor(const Color& color4f)
 {
 	m_oColor = color4f;
 }
 
-void Object::SetObjectLife(float life)
+void Object::SetObjectLife(int life)
 {
 	m_life = life;
 }
@@ -81,15 +81,30 @@ void Object::SetObjectType(Type objtype)
 	m_objectType = objtype;
 }
 
-void Object::SetObjectArrowCoolTime(float time)
+bool Object::SetObjectArrowCoolTime(float time)
 {
-	m_arrowTime += time;
+	m_arrowTime += (time / 1000.0f);
 
-	if (m_arrowTime >= 300)
+	if (m_arrowTime >= ArrowCoolTime)
 	{
 		m_arrowTime = 0.0f;
-		this->SetCreateArrowFlag(true);
+		return true;
 	}
+
+	return false;
+}
+
+bool Object::SetObjectCharacterCoolTime(float time)
+{
+	m_characterTime += (time / 1000.0f);
+
+	if (m_characterTime >= MyCharacterCoolTime)
+	{
+		m_characterTime = 0.0f;
+		return true;
+	}
+
+	return false;
 }
 
 void Object::SetCreateArrowFlag(bool flag)
@@ -100,6 +115,11 @@ void Object::SetCreateArrowFlag(bool flag)
 void Object::SetCharacterTag(int tag)
 {
 	m_tag = tag;
+}
+
+void Object::SetCanCreateMyCharacter(bool flag)
+{
+	m_createMyChar = flag;
 }
 
 float Object::GetObjectPosX() const
@@ -127,7 +147,7 @@ Color Object::GetObjectColorRGBA() const
 	return m_oColor;
 }
 
-float Object::GetObjectLife() const
+int Object::GetObjectLife() const
 {
 	return m_life;
 }
@@ -155,6 +175,11 @@ bool Object::GetCreateArrowFlag() const
 int Object::GetCharacterTag() const
 {
 	return m_tag;
+}
+
+bool Object::GetCanCreateMyCharacter() const
+{
+	return m_createMyChar;
 }
 
 void Object::Update(float elapsedTime)

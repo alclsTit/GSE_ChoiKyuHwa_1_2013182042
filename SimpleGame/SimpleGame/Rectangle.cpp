@@ -53,7 +53,7 @@ RectLength CRectangle::GetRectSize() const
 
 void CRectangle::Update(float elapsedTime)
 {
-	auto newElapsedTime = elapsedTime / 1500.0f;
+	auto newElapsedTime = elapsedTime / 1000.0f;
 
 	//m_vec3fPos.z += m_vec3fDir.z * m_fVelocity * fTime;
 
@@ -71,7 +71,6 @@ void CRectangle::Update(float elapsedTime)
 
 	m_vec3fPos.x += m_vec3fDir.x * m_fVelocity * newElapsedTime;
 	m_vec3fPos.y += m_vec3fDir.y * m_fVelocity * newElapsedTime;
-
 
 }
 
