@@ -204,8 +204,9 @@ void CSceneMgr::Update(float elapsedTime)
 {
 	int temp, temp_other;
 
-	// 10초마다 붉은색상의 총알을 랜덤방향으로 생성한다.
-	
+	//--------------------------------------------------------------------------------- 
+	//내 캐릭터, 상대 캐릭터, 빌딩 주기 생성
+
 	m_buildingTime += (elapsedTime / 1000.0f);
 	m_enyCharTime += (elapsedTime / 1000.0f);
 
@@ -220,7 +221,6 @@ void CSceneMgr::Update(float elapsedTime)
 			m_cancCreChar = true;
 		}
 	}
-		
 
 	if (m_enyCharTime >= EnyCharacterCoolTime)
 	{
@@ -233,17 +233,20 @@ void CSceneMgr::Update(float elapsedTime)
 		//빌딩의 위치는 변화하지 않으므로 상수값으로 설정
 
 		//bottom
-		this->CreateBullet({ -150.0f, -250.0f, 1.0f}, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
-		this->CreateBullet({ 0.0f, -250.0f, 1.0f}, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
-		this->CreateBullet({ 150.0f, -250.0f, 1.0f}, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
+		this->CreateBullet({ -150.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
+		this->CreateBullet({ 0.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
+		this->CreateBullet({ 150.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
 
 		//top
-		this->CreateBullet({ -150.0f, 250.0f , 1.0f}, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
+		this->CreateBullet({ -150.0f, 250.0f , 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
 		this->CreateBullet({ 0.0f, 250.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
 		this->CreateBullet({ 150.0f, 250.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
 
 		m_buildingTime = 0.0f;
 	}
+
+	//---------------------------------------------------------------------------------
+	// 캐릭터 생성 시 화살의 주기 생성
 
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
@@ -269,7 +272,9 @@ void CSceneMgr::Update(float elapsedTime)
 		}
 	}
 
-	// 나와 상대팀의 충돌
+	//---------------------------------------------------------------------------------
+	// 나와 상대팀의 충돌체크
+
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
 		for (int j = 0; j < m_topVec.size(); ++j)
@@ -341,7 +346,10 @@ void CSceneMgr::Update(float elapsedTime)
 		}
 	}
 
+	//---------------------------------------------------------------------------------
+	//오브젝트 삭제
 	//vector<CRectangle*>::iterator iter = m_rectVec.begin();
+
 	if (m_rectVec.size() >= 1)
 	{
 		for (auto iter = m_rectVec.begin(); iter != m_rectVec.end();)
@@ -364,6 +372,7 @@ void CSceneMgr::Update(float elapsedTime)
 		}
 	}
 
+	//---------------------------------------------------------------------------------
 }
 
 

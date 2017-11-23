@@ -72,5 +72,10 @@ void CRectangle::Update(float elapsedTime)
 	m_vec3fPos.x += m_vec3fDir.x * m_fVelocity * newElapsedTime;
 	m_vec3fPos.y += m_vec3fDir.y * m_fVelocity * newElapsedTime;
 
+	if (m_vec3fPos.x > WINDOW_WIDTH / 2 || m_vec3fPos.x < -WINDOW_WIDTH / 2 ||
+		m_vec3fPos.y > WINDOW_HEIGHT / 2 || m_vec3fPos.y < -WINDOW_HEIGHT / 2)
+	{
+		m_life = 0;
+	}
 }
 
