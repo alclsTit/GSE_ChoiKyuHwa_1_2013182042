@@ -199,7 +199,7 @@ void CSceneMgr::CreateEnemyCharacter()
 	);
 
 	rect->SetObjectSpeed(300.0f);
-	rect->SetObjectLife(10);
+	rect->SetObjectLife(CharacterLife);
 	rect->SetObjectType(Type::Enemy_OBJECT_CHARACTER);
 	rect->SetObjectLifeTime(1000);
 	rect->SetCharacterTag(m_enyCharTag);

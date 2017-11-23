@@ -20,7 +20,7 @@
 
 #define BulletLife 20
 #define ArrowLife 10
-#define CharacterLife 10
+#define CharacterLife 100
 
 
 enum class Type 
