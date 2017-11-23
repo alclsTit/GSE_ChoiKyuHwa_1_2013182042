@@ -34,6 +34,9 @@ protected:
 
 	int   m_tag{ 0 };
 
+	float m_objectLevel;
+	int m_oriLife{ 0 };
+
 public:
 	Object();
 	Object(const Vec3f& vec3f, const Color& color4f);
@@ -51,6 +54,7 @@ public:
 	void SetObjectLife(int life);
 	void SetObjectLifeTime(float lfTime);
 	void SetObjectType(Type objtype);
+	void SetObjectLevel(float level);
 
 	bool SetObjectArrowCoolTime(float time);
 	bool SetObjectCharacterCoolTime(float time);
@@ -58,6 +62,7 @@ public:
 	void SetCreateArrowFlag(bool flag);
 	void SetCharacterTag(int tag);
 	void SetCanCreateMyCharacter(bool flag);
+	void SetObjectOriginalLife(int life);
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
@@ -71,6 +76,8 @@ public:
 	bool GetCreateArrowFlag() const;
 	int GetCharacterTag() const;
 	bool GetCanCreateMyCharacter() const;
+	float GetObjectLevel() const;
+	int GetObjectOriginalLife() const;
 
 	virtual void Update(float elapsedTime);
 

@@ -18,6 +18,11 @@
 #define MyCharacterCoolTime 7
 #define EnyCharacterCoolTime 5
 
+#define BulletLife 20
+#define ArrowLife 10
+#define CharacterLife 10
+
+
 enum class Type 
 {
 	Enemy_OBJECT_BUILDING,
@@ -28,6 +33,14 @@ enum class Type
 	My_OBJECT_CHARACTER,
 	My_OBJECT_BULLET,
 	My_OBJECT_ARROW,
+};
+
+struct Level
+{
+	float Level_Building = 0.1;
+	float Level_Character = 0.2;
+	float Level_Bullet = 0.3;
+	float Level_Arrow = 0.3;
 };
 
 using namespace std;

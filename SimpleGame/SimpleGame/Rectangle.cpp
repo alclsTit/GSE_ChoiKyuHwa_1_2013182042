@@ -75,7 +75,11 @@ void CRectangle::Update(float elapsedTime)
 	if (m_vec3fPos.x > WINDOW_WIDTH / 2 || m_vec3fPos.x < -WINDOW_WIDTH / 2 ||
 		m_vec3fPos.y > WINDOW_HEIGHT / 2 || m_vec3fPos.y < -WINDOW_HEIGHT / 2)
 	{
-		m_life = 0;
+		if (m_objectType == Type::Enemy_OBJECT_ARROW || m_objectType == Type::Enemy_OBJECT_BULLET ||
+			m_objectType == Type::My_OBJECT_ARROW || m_objectType == Type::My_OBJECT_BULLET)
+		{
+			m_life = 0;
+		}
 	}
 }
 

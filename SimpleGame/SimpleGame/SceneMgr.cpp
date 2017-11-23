@@ -51,6 +51,8 @@ void CSceneMgr::CreateBuilding(vector<CRectangle*>& vec, Vec3f pos, Color color,
 	m_building->SetObjectLife(life);
 	m_building->SetObjectLifeTime(lifeTime);
 	m_building->SetObjectType(type);
+	m_building->SetObjectLevel(m_objLevel.Level_Building);
+	m_building->SetObjectOriginalLife(life);
 
 	vec.push_back(m_building);
 
@@ -80,10 +82,11 @@ void CSceneMgr::CreateBullet(Vec3f createPos, Color color, Type type)
 	);
 
 	bullet->SetObjectSpeed(300.0f);
-	bullet->SetObjectLife(20);
+	bullet->SetObjectLife(BulletLife);
 	bullet->SetObjectLifeTime(500);
-
 	bullet->SetObjectType(type);
+	bullet->SetObjectLevel(m_objLevel.Level_Bullet);
+	bullet->SetObjectOriginalLife(BulletLife);
 
 	if (type == Type::My_OBJECT_BULLET)
 		m_rectVec.push_back(bullet);
@@ -117,8 +120,10 @@ void CSceneMgr::CreateArrow(CRectangle *rect)
 	);
 
 	arrow->SetObjectSpeed(100.0f);
-	arrow->SetObjectLife(10);
+	arrow->SetObjectLife(ArrowLife);
 	arrow->SetCharacterTag(rect->GetCharacterTag());
+	arrow->SetObjectLevel(m_objLevel.Level_Arrow);
+	arrow->SetObjectOriginalLife(ArrowLife);
 
 	if (rect->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)
 	{
@@ -148,7 +153,7 @@ void CSceneMgr::CreateMyCharacter(float posX, float posY)
 		(
 			posX - 250.0f, -posY + 800.0f - 400.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, 1.0f,
-			10
+			30
 		);
 		rect->SetObjectDirection
 		(
@@ -158,10 +163,12 @@ void CSceneMgr::CreateMyCharacter(float posX, float posY)
 		);
 
 		rect->SetObjectSpeed(300.0f);
-		rect->SetObjectLife(10);
+		rect->SetObjectLife(CharacterLife);
 		rect->SetObjectType(Type::My_OBJECT_CHARACTER);
 		rect->SetObjectLifeTime(1000);
 		rect->SetCharacterTag(m_myCharTag);
+		rect->SetObjectLevel(m_objLevel.Level_Character);
+		rect->SetObjectOriginalLife(CharacterLife);
 
 		m_rectVec.push_back(rect);
 
@@ -182,7 +189,7 @@ void CSceneMgr::CreateEnemyCharacter()
 	(
 		rand() % 400 - 200, rand() % 250, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
-		10
+		30
 	);
 	rect->SetObjectDirection
 	(
@@ -196,6 +203,8 @@ void CSceneMgr::CreateEnemyCharacter()
 	rect->SetObjectType(Type::Enemy_OBJECT_CHARACTER);
 	rect->SetObjectLifeTime(1000);
 	rect->SetCharacterTag(m_enyCharTag);
+	rect->SetObjectLevel(m_objLevel.Level_Character);
+	rect->SetObjectOriginalLife(CharacterLife);
 
 	m_topVec.push_back(rect);
 }
@@ -288,7 +297,8 @@ void CSceneMgr::Update(float elapsedTime)
 				//나의 빌딩과 상대의 불렛, 캐릭터 충돌
 				if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING
 					&& (m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER||
-						m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_ARROW))
+						m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_ARROW	||
+						m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_BULLET))
 				{
 					m_rectVec[i]->SetObjectLife(temp);
 					m_topVec[j]->SetObjectLife(temp_other);
@@ -298,7 +308,8 @@ void CSceneMgr::Update(float elapsedTime)
 
 				//나의 불렛과 상대의 빌딩, 캐릭터 충돌
 				if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BULLET
-					&& m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)
+					&& (m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER ||
+						m_topVec[j]->GetObjectType() == Type::Enemy_OBJECT_BUILDING))
 				{
 					m_rectVec[i]->SetObjectLife(temp);
 					m_topVec[j]->SetObjectLife(temp_other);
@@ -378,6 +389,8 @@ void CSceneMgr::Update(float elapsedTime)
 
 void CSceneMgr::Draw()
 {
+	float temp = 0.0f;
+
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
 		if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
@@ -386,7 +399,15 @@ void CSceneMgr::Draw()
 			(
 				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), 
 				m_rectVec[i]->GetObjectPosZ(),
-				m_rectVec[i]->GetSquareSize(), 0.0f, 0.0f, 0.0f, 0.5f, m_texMyBuilding
+				m_rectVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 1.0f, m_texMyBuilding,
+				m_rectVec[i]->GetObjectLevel()
+			);
+
+			m_render->DrawSolidRectGauge
+			(
+				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY() + 50, m_rectVec[i]->GetObjectPosZ(),
+				100, 10, 0.0f, 0.0f, 1.0f, 1.0f, static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
+				m_rectVec[i]->GetObjectLevel()
 			);
 		}
 		else
@@ -396,8 +417,19 @@ void CSceneMgr::Draw()
 				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
 				m_rectVec[i]->GetSquareSize(),
 				m_rectVec[i]->GetObjectColorRGBA().r, m_rectVec[i]->GetObjectColorRGBA().g,
-				m_rectVec[i]->GetObjectColorRGBA().b, m_rectVec[i]->GetObjectColorRGBA().a
+				m_rectVec[i]->GetObjectColorRGBA().b, m_rectVec[i]->GetObjectColorRGBA().a,
+				m_rectVec[i]->GetObjectLevel()
 			);
+
+			if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_CHARACTER)
+			{
+				m_render->DrawSolidRectGauge
+				(
+					m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY() + 20, m_rectVec[i]->GetObjectPosZ(),
+					25, 5, 0.0f, 0.0f, 1.0f, 1.0f, static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
+					m_rectVec[i]->GetObjectLevel()
+				);
+			}
 		}
 	}
 
@@ -409,7 +441,15 @@ void CSceneMgr::Draw()
 			(
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), 
 				m_topVec[i]->GetObjectPosZ(),
-				m_topVec[i]->GetSquareSize(), 0.0f, 0.0f, 0.0f, 0.5f, m_texEnemyBuilding
+				m_topVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 1.0f, m_texEnemyBuilding,
+				m_topVec[i]->GetObjectLevel()
+			);
+
+			m_render->DrawSolidRectGauge
+			(
+				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 50, m_topVec[i]->GetObjectPosZ(),
+				100, 10, 1.0f, 0.0f, 0.0f, 1.0f, static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()) ,
+				m_topVec[i]->GetObjectLevel()
 			);
 		}
 		else
@@ -419,8 +459,19 @@ void CSceneMgr::Draw()
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
 				m_topVec[i]->GetSquareSize(),
 				m_topVec[i]->GetObjectColorRGBA().r, m_topVec[i]->GetObjectColorRGBA().g,
-				m_topVec[i]->GetObjectColorRGBA().b, m_topVec[i]->GetObjectColorRGBA().a
+				m_topVec[i]->GetObjectColorRGBA().b, m_topVec[i]->GetObjectColorRGBA().a,
+				m_topVec[i]->GetObjectLevel()
 			);
+
+			if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)
+			{
+				m_render->DrawSolidRectGauge
+				(
+					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 20, m_topVec[i]->GetObjectPosZ(),
+					25, 5, 1.0f, 0.0f, 0.0f, 1.0f, static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()),
+					m_topVec[i]->GetObjectLevel()
+				);
+			}
 		}
 	}
 }

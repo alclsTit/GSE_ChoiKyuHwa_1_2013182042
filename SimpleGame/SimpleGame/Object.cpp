@@ -81,6 +81,11 @@ void Object::SetObjectType(Type objtype)
 	m_objectType = objtype;
 }
 
+void Object::SetObjectLevel(float level)
+{
+	m_objectLevel = level;
+}
+
 bool Object::SetObjectArrowCoolTime(float time)
 {
 	m_arrowTime += (time / 1000.0f);
@@ -120,6 +125,11 @@ void Object::SetCharacterTag(int tag)
 void Object::SetCanCreateMyCharacter(bool flag)
 {
 	m_createMyChar = flag;
+}
+
+void Object::SetObjectOriginalLife(int life)
+{
+	m_oriLife = life;
 }
 
 float Object::GetObjectPosX() const
@@ -180,6 +190,16 @@ int Object::GetCharacterTag() const
 bool Object::GetCanCreateMyCharacter() const
 {
 	return m_createMyChar;
+}
+
+float Object::GetObjectLevel() const
+{
+	return m_objectLevel;
+}
+
+int Object::GetObjectOriginalLife() const
+{
+	return m_oriLife;
 }
 
 void Object::Update(float elapsedTime)

@@ -35,6 +35,8 @@ private:
 
 	GLuint m_texEnemyBuilding;
 	GLuint m_texMyBuilding;
+
+	Level m_objLevel;
 	
 public:
 	CSceneMgr();
