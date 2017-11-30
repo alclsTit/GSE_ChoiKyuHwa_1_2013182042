@@ -11,24 +11,32 @@ CSceneMgr::CSceneMgr()
 
 	//¾Æ±º ºôµù - ¹ÙÅÒ
 	this->CreateBuilding(m_rectVec, { -150.0f, -250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
-						100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/minion.png");
+						100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/Objects/minion.png");
 
 	this->CreateBuilding(m_rectVec, { 0.0f, -250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
-		100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/minion.png");
+		100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/Objects/minion.png");
 
 	this->CreateBuilding(m_rectVec, { 150.0f, -250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
-		100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/minion.png");
+		100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/Objects/minion.png");
 
 	
 	//Àû ºôµù - Å¾
 	this->CreateBuilding(m_topVec, { -150.0f, 250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
-						100, 500, 5000, Type::Enemy_OBJECT_BUILDING, "./Resources/bear.png");
+						100, 500, 5000, Type::Enemy_OBJECT_BUILDING, "./Resources/Objects/bear.png");
 
 	this->CreateBuilding(m_topVec, { 0.0f, 250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
-		100, 500, 5000, Type::Enemy_OBJECT_BUILDING, "./Resources/bear.png");
+		100, 500, 5000, Type::Enemy_OBJECT_BUILDING, "./Resources/Objects/bear.png");
 
 	this->CreateBuilding(m_topVec, { 150.0f, 250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
-		100, 500, 5000, Type::Enemy_OBJECT_BUILDING, "./Resources/bear.png");
+		100, 500, 5000, Type::Enemy_OBJECT_BUILDING, "./Resources/Objects/bear.png");
+
+	m_texBackground = m_render->CreatePngTexture("./Resources/Background/background.png");
+
+	m_texAnimationSp = m_render->CreatePngTexture("./Resources/Characters/character02.png");
+	m_texEnyAnimationSp = m_render->CreatePngTexture("./Resources/Characters/character02.png");
+
+	m_texParticle = m_render->CreatePngTexture("./Resources/Particles/particle01.png");
+	m_texEnyParticle = m_render->CreatePngTexture("./Resources/Particles/particle02.png");
 }
 
 
@@ -267,6 +275,10 @@ void CSceneMgr::Update(float elapsedTime)
 				this->CreateArrow(m_rectVec[i]);
 			}
 		}
+		else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BULLET)
+		{
+			m_rectVec[i]->SetBulletObjectTime(elapsedTime);
+		}
 	}
 
 	for (int i = 0; i < m_topVec.size(); ++i)
@@ -278,6 +290,10 @@ void CSceneMgr::Update(float elapsedTime)
 			{
 				this->CreateArrow(m_topVec[i]);
 			}
+		}
+		else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BULLET)
+		{
+			m_topVec[i]->SetBulletObjectTime(elapsedTime);
 		}
 	}
 
@@ -391,6 +407,16 @@ void CSceneMgr::Draw()
 {
 	float temp = 0.0f;
 
+	// ¹è°æÀÌ¹ÌÁö
+	m_render->DrawTexturedRect
+	(
+		0, 0,
+		1,
+		1000, 1.0f, 1.0f, 1.0f, 1.0f, m_texBackground,
+		0.4f
+	);
+
+
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
 		if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
@@ -412,21 +438,32 @@ void CSceneMgr::Draw()
 		}
 		else
 		{
-			m_render->DrawSolidRect
-			(
-				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
-				m_rectVec[i]->GetSquareSize(),
-				m_rectVec[i]->GetObjectColorRGBA().r, m_rectVec[i]->GetObjectColorRGBA().g,
-				m_rectVec[i]->GetObjectColorRGBA().b, m_rectVec[i]->GetObjectColorRGBA().a,
-				m_rectVec[i]->GetObjectLevel()
-			);
-
-			if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_CHARACTER)
+			if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BULLET)
 			{
+				m_render->DrawParticle(m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
+					8.0f, 1.0f, 1.0f, 1.0f, 1.0f, -m_rectVec[i]->GetObjectDirection().x, -m_rectVec[i]->GetObjectDirection().y, m_texParticle,
+					m_rectVec[i]->GetBulletObjectTime());
+			}
+			else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_CHARACTER)
+			{
+				m_render->DrawTexturedRectSeq(m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
+					m_rectVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 0.5f, m_texAnimationSp, 2, 0, 8, 2, m_rectVec[i]->GetObjectLevel());
+
 				m_render->DrawSolidRectGauge
 				(
 					m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY() + 20, m_rectVec[i]->GetObjectPosZ(),
 					25, 5, 0.0f, 0.0f, 1.0f, 1.0f, static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
+					m_rectVec[i]->GetObjectLevel()
+				);
+			}
+			else
+			{
+				m_render->DrawSolidRect
+				(
+					m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
+					m_rectVec[i]->GetSquareSize(),
+					m_rectVec[i]->GetObjectColorRGBA().r, m_rectVec[i]->GetObjectColorRGBA().g,
+					m_rectVec[i]->GetObjectColorRGBA().b, m_rectVec[i]->GetObjectColorRGBA().a,
 					m_rectVec[i]->GetObjectLevel()
 				);
 			}
@@ -454,17 +491,17 @@ void CSceneMgr::Draw()
 		}
 		else
 		{
-			m_render->DrawSolidRect
-			(
-				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
-				m_topVec[i]->GetSquareSize(),
-				m_topVec[i]->GetObjectColorRGBA().r, m_topVec[i]->GetObjectColorRGBA().g,
-				m_topVec[i]->GetObjectColorRGBA().b, m_topVec[i]->GetObjectColorRGBA().a,
-				m_topVec[i]->GetObjectLevel()
-			);
-
-			if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)
+			if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BULLET)
 			{
+				m_render->DrawParticle(m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
+					8.0f, 1.0f, 1.0f, 1.0f, 1.0f, -m_topVec[i]->GetObjectDirection().x, -m_topVec[i]->GetObjectDirection().y, m_texEnyParticle,
+					m_topVec[i]->GetBulletObjectTime());
+			}
+			else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)
+			{
+				m_render->DrawTexturedRectSeq(m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
+					m_topVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 0.5f, m_texEnyAnimationSp, 2, 0, 8, 2, m_topVec[i]->GetObjectLevel());
+
 				m_render->DrawSolidRectGauge
 				(
 					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 20, m_topVec[i]->GetObjectPosZ(),
@@ -472,6 +509,18 @@ void CSceneMgr::Draw()
 					m_topVec[i]->GetObjectLevel()
 				);
 			}
+			else
+			{
+				m_render->DrawSolidRect
+				(
+					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
+					m_topVec[i]->GetSquareSize(),
+					m_topVec[i]->GetObjectColorRGBA().r, m_topVec[i]->GetObjectColorRGBA().g,
+					m_topVec[i]->GetObjectColorRGBA().b, m_topVec[i]->GetObjectColorRGBA().a,
+					m_topVec[i]->GetObjectLevel()
+				);
+			}
+
 		}
 	}
 }

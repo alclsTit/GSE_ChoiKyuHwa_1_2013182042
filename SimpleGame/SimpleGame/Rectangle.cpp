@@ -81,5 +81,7 @@ void CRectangle::Update(float elapsedTime)
 			m_life = 0;
 		}
 	}
+
+	
 }
 

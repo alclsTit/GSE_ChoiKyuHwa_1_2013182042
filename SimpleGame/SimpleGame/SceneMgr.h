@@ -35,6 +35,13 @@ private:
 
 	GLuint m_texEnemyBuilding;
 	GLuint m_texMyBuilding;
+	GLuint m_texBackground;
+
+	GLuint m_texAnimationSp;
+	GLuint m_texEnyAnimationSp;
+
+	GLuint m_texParticle;
+	GLuint m_texEnyParticle;
 
 	Level m_objLevel;
 	

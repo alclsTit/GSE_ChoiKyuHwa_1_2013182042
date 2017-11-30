@@ -112,6 +112,11 @@ bool Object::SetObjectCharacterCoolTime(float time)
 	return false;
 }
 
+void Object::SetBulletObjectTime(float time)
+{
+	m_bulletTime += (time / 1000.0f);
+}
+
 void Object::SetCreateArrowFlag(bool flag)
 {
 	m_createArrow = flag;
@@ -174,7 +179,7 @@ float Object::GetObjectLifeTime() const
 
 float Object::GetArrowCoolTime() const
 {
-	return 0.0f;
+	return m_arrowTime;
 }
 
 bool Object::GetCreateArrowFlag() const
@@ -200,6 +205,16 @@ float Object::GetObjectLevel() const
 int Object::GetObjectOriginalLife() const
 {
 	return m_oriLife;
+}
+
+Vec3f Object::GetObjectDirection() const
+{
+	return m_vec3fDir;
+}
+
+float Object::GetBulletObjectTime() const
+{
+	return m_bulletTime;
 }
 
 void Object::Update(float elapsedTime)

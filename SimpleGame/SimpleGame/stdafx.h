@@ -13,7 +13,7 @@
 #define WINDOW_WIDTH 500
 #define WINDOW_HEIGHT 800
 
-#define BuildingCoolTime 10
+#define BuildingCoolTime 3
 #define ArrowCoolTime 3
 #define MyCharacterCoolTime 7
 #define EnyCharacterCoolTime 5
@@ -22,6 +22,8 @@
 #define ArrowLife 10
 #define CharacterLife 100
 
+#define MAX_ANI_FRAME_WIDTH 8
+#define MAX_ANI_FRAME_HEIGHT 2
 
 enum class Type 
 {

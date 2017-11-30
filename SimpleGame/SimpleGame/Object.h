@@ -2,7 +2,11 @@
 #include "stdafx.h"
 #include "Vector.h"
 
-
+struct AniFrame
+{
+	int width;
+	int height;
+};
 
 struct Color
 {
@@ -37,6 +41,9 @@ protected:
 	float m_objectLevel;
 	int m_oriLife{ 0 };
 
+	AniFrame aniFrame{ 0, 0 };
+
+	float m_bulletTime{ 0.0f };
 public:
 	Object();
 	Object(const Vec3f& vec3f, const Color& color4f);
@@ -63,6 +70,7 @@ public:
 	void SetCharacterTag(int tag);
 	void SetCanCreateMyCharacter(bool flag);
 	void SetObjectOriginalLife(int life);
+	void SetBulletObjectTime(float time);
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
@@ -78,6 +86,8 @@ public:
 	bool GetCanCreateMyCharacter() const;
 	float GetObjectLevel() const;
 	int GetObjectOriginalLife() const;
+	Vec3f GetObjectDirection() const;
+	float GetBulletObjectTime() const;
 
 	virtual void Update(float elapsedTime);
 
