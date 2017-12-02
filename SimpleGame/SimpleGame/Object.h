@@ -2,10 +2,10 @@
 #include "stdafx.h"
 #include "Vector.h"
 
-struct AniFrame
+struct AniMove
 {
-	int width;
-	int height;
+	int w_move;
+	int h_move;
 };
 
 struct Color
@@ -41,9 +41,15 @@ protected:
 	float m_objectLevel;
 	int m_oriLife{ 0 };
 
-	AniFrame aniFrame{ 0, 0 };
+	AniMove aniMove{ 0, 0 };
+	float m_aniTime{ 0.0f };
+	int m_aniTimeCnt{ 0 };
 
+	//불렛 파티클이 시간주기마다 생성되도록(인자로 넘겨준 값)
 	float m_bulletTime{ 0.0f };
+	//불렛의 생성주기를 위해 빌딩에 설정
+	float m_createBulletTime{ 0.0f };
+	
 public:
 	Object();
 	Object(const Vec3f& vec3f, const Color& color4f);
@@ -71,6 +77,9 @@ public:
 	void SetCanCreateMyCharacter(bool flag);
 	void SetObjectOriginalLife(int life);
 	void SetBulletObjectTime(float time);
+	bool IsCanCharAniToNext();
+	void SetCharAniMove(Type type);
+	bool IsCanCreateBulletTime(float time);
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
@@ -88,6 +97,7 @@ public:
 	int GetObjectOriginalLife() const;
 	Vec3f GetObjectDirection() const;
 	float GetBulletObjectTime() const;
+	AniMove GetCharacterAniMove() const;
 
 	virtual void Update(float elapsedTime);
 

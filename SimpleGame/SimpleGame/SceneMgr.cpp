@@ -32,8 +32,8 @@ CSceneMgr::CSceneMgr()
 
 	m_texBackground = m_render->CreatePngTexture("./Resources/Background/background.png");
 
-	m_texAnimationSp = m_render->CreatePngTexture("./Resources/Characters/character02.png");
-	m_texEnyAnimationSp = m_render->CreatePngTexture("./Resources/Characters/character02.png");
+	m_texAnimationSp = m_render->CreatePngTexture("./Resources/Characters/Character01.png");
+	m_texEnyAnimationSp = m_render->CreatePngTexture("./Resources/Characters/Character02.png");
 
 	m_texParticle = m_render->CreatePngTexture("./Resources/Particles/particle01.png");
 	m_texEnyParticle = m_render->CreatePngTexture("./Resources/Particles/particle02.png");
@@ -224,7 +224,7 @@ void CSceneMgr::Update(float elapsedTime)
 	//--------------------------------------------------------------------------------- 
 	//내 캐릭터, 상대 캐릭터, 빌딩 주기 생성
 
-	m_buildingTime += (elapsedTime / 1000.0f);
+	//m_buildingTime += (elapsedTime / 1000.0f);
 	m_enyCharTime += (elapsedTime / 1000.0f);
 
 	if (m_createMyChar)
@@ -245,22 +245,43 @@ void CSceneMgr::Update(float elapsedTime)
 		m_enyCharTime = 0.0f;
 	}
 
+	/*
 	if (m_buildingTime >= BuildingCoolTime)
 	{
 		//빌딩의 위치는 변화하지 않으므로 상수값으로 설정
+		for (int i = 0; i < BUILDING_MAX_NUMBER; ++i)
+		{
+			//bottom
+			if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
+			{
+				this->CreateBullet(
+					m_rectVec[i]->GetObjectPosXYZ(), m_rectVec[i]->GetObjectColorRGBA(), Type::My_OBJECT_BULLET
+				);
+			}
 
-		//bottom
-		this->CreateBullet({ -150.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
-		this->CreateBullet({ 0.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
-		this->CreateBullet({ 150.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
-
-		//top
-		this->CreateBullet({ -150.0f, 250.0f , 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
-		this->CreateBullet({ 0.0f, 250.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
-		this->CreateBullet({ 150.0f, 250.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
+			//top
+			if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BUILDING)
+			{
+				this->CreateBullet(
+					m_topVec[i]->GetObjectPosXYZ(), m_topVec[i]->GetObjectColorRGBA(), Type::Enemy_OBJECT_BULLET
+				);
+			}
+		}
 
 		m_buildingTime = 0.0f;
-	}
+
+		//bottom
+		//this->CreateBullet({ -150.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
+		//this->CreateBullet({ 0.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
+		//this->CreateBullet({ 150.0f, -250.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f }, Type::My_OBJECT_BULLET);
+		//
+		////top
+		//this->CreateBullet({ -150.0f, 250.0f , 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
+		//this->CreateBullet({ 0.0f, 250.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
+		//this->CreateBullet({ 150.0f, 250.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, Type::Enemy_OBJECT_BULLET);
+
+
+	}*/
 
 	//---------------------------------------------------------------------------------
 	// 캐릭터 생성 시 화살의 주기 생성
@@ -271,13 +292,22 @@ void CSceneMgr::Update(float elapsedTime)
 		if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_CHARACTER)
 		{
 			if (m_rectVec[i]->SetObjectArrowCoolTime(elapsedTime))
-			{
 				this->CreateArrow(m_rectVec[i]);
-			}
+		
+			if (m_rectVec[i]->IsCanCharAniToNext())					//캐릭터 애니메이션 가능 주기 - 30프레임마다 1번씩 애니매이션
+				m_rectVec[i]->SetCharAniMove(m_rectVec[i]->GetObjectType());
+			
 		}
 		else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BULLET)
 		{
 			m_rectVec[i]->SetBulletObjectTime(elapsedTime);
+		}
+		else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
+		{
+			if (m_rectVec[i]->IsCanCreateBulletTime(elapsedTime))
+				this->CreateBullet(
+					m_rectVec[i]->GetObjectPosXYZ(), m_rectVec[i]->GetObjectColorRGBA(), Type::My_OBJECT_BULLET
+				);
 		}
 	}
 
@@ -287,13 +317,21 @@ void CSceneMgr::Update(float elapsedTime)
 		if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER && m_enyCharTime != 0.0f)
 		{
 			if (m_topVec[i]->SetObjectArrowCoolTime(elapsedTime))
-			{
 				this->CreateArrow(m_topVec[i]);
-			}
+			
+			if (m_topVec[i]->IsCanCharAniToNext())
+				m_topVec[i]->SetCharAniMove(m_topVec[i]->GetObjectType());
 		}
 		else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BULLET)
 		{
 			m_topVec[i]->SetBulletObjectTime(elapsedTime);
+		}
+		else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BUILDING)
+		{
+			if (m_topVec[i]->IsCanCreateBulletTime(elapsedTime))
+				this->CreateBullet(
+					m_topVec[i]->GetObjectPosXYZ(), m_topVec[i]->GetObjectColorRGBA(), Type::Enemy_OBJECT_BULLET
+				);
 		}
 	}
 
@@ -405,14 +443,18 @@ void CSceneMgr::Update(float elapsedTime)
 
 void CSceneMgr::Draw()
 {
-	float temp = 0.0f;
+	//float temp = 0.0f;
+
+	AniType anitype;
 
 	// 배경이미지
 	m_render->DrawTexturedRect
 	(
 		0, 0,
 		1,
-		1000, 1.0f, 1.0f, 1.0f, 1.0f, m_texBackground,
+		1000, 
+		1.0f, 1.0f, 1.0f, 1.0f, 
+		m_texBackground,
 		0.4f
 	);
 
@@ -432,7 +474,9 @@ void CSceneMgr::Draw()
 			m_render->DrawSolidRectGauge
 			(
 				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY() + 50, m_rectVec[i]->GetObjectPosZ(),
-				100, 10, 0.0f, 0.0f, 1.0f, 1.0f, static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
+				100, 10, 
+				0.0f, 0.0f, 1.0f, 1.0f, 
+				static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
 				m_rectVec[i]->GetObjectLevel()
 			);
 		}
@@ -440,19 +484,35 @@ void CSceneMgr::Draw()
 		{
 			if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BULLET)
 			{
-				m_render->DrawParticle(m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
-					8.0f, 1.0f, 1.0f, 1.0f, 1.0f, -m_rectVec[i]->GetObjectDirection().x, -m_rectVec[i]->GetObjectDirection().y, m_texParticle,
-					m_rectVec[i]->GetBulletObjectTime());
+				m_render->DrawParticle
+				(
+					m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
+					8.0f,
+					1.0f, 1.0f, 1.0f, 1.0f,
+					-m_rectVec[i]->GetObjectDirection().x, -m_rectVec[i]->GetObjectDirection().y, 
+					m_texParticle,
+					m_rectVec[i]->GetBulletObjectTime()
+				);
 			}
 			else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_CHARACTER)
 			{
-				m_render->DrawTexturedRectSeq(m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
-					m_rectVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 0.5f, m_texAnimationSp, 2, 0, 8, 2, m_rectVec[i]->GetObjectLevel());
+				m_render->DrawTexturedRectSeq
+				(
+					m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), m_rectVec[i]->GetObjectPosZ(),
+					m_rectVec[i]->GetSquareSize(), 
+					1.0f, 1.0f, 1.0f, 0.5f, 
+					m_texAnimationSp, 
+					m_rectVec[i]->GetCharacterAniMove().w_move, m_rectVec[i]->GetCharacterAniMove().h_move, 
+					anitype.MyChar.Max_Width, anitype.MyChar.Max_Height, 
+					m_rectVec[i]->GetObjectLevel()
+				);
 
 				m_render->DrawSolidRectGauge
 				(
 					m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY() + 20, m_rectVec[i]->GetObjectPosZ(),
-					25, 5, 0.0f, 0.0f, 1.0f, 1.0f, static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
+					25, 5, 
+					0.0f, 0.0f, 1.0f, 1.0f, 
+					static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
 					m_rectVec[i]->GetObjectLevel()
 				);
 			}
@@ -485,7 +545,9 @@ void CSceneMgr::Draw()
 			m_render->DrawSolidRectGauge
 			(
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 50, m_topVec[i]->GetObjectPosZ(),
-				100, 10, 1.0f, 0.0f, 0.0f, 1.0f, static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()) ,
+				100, 10, 
+				1.0f, 0.0f, 0.0f, 1.0f, 
+				static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()) ,
 				m_topVec[i]->GetObjectLevel()
 			);
 		}
@@ -493,19 +555,35 @@ void CSceneMgr::Draw()
 		{
 			if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BULLET)
 			{
-				m_render->DrawParticle(m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
-					8.0f, 1.0f, 1.0f, 1.0f, 1.0f, -m_topVec[i]->GetObjectDirection().x, -m_topVec[i]->GetObjectDirection().y, m_texEnyParticle,
-					m_topVec[i]->GetBulletObjectTime());
+				m_render->DrawParticle
+				(
+					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
+					8.0f, 
+					1.0f, 1.0f, 1.0f, 1.0f, 
+					-m_topVec[i]->GetObjectDirection().x, -m_topVec[i]->GetObjectDirection().y, 
+					m_texEnyParticle,
+					m_topVec[i]->GetBulletObjectTime()
+				);
 			}
 			else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)
 			{
-				m_render->DrawTexturedRectSeq(m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
-					m_topVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 0.5f, m_texEnyAnimationSp, 2, 0, 8, 2, m_topVec[i]->GetObjectLevel());
+				m_render->DrawTexturedRectSeq
+				(
+					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
+					m_topVec[i]->GetSquareSize(), 
+					1.0f, 1.0f, 1.0f, 0.5f, 
+					m_texEnyAnimationSp, 
+					m_topVec[i]->GetCharacterAniMove().w_move, m_topVec[i]->GetCharacterAniMove().h_move, 
+					anitype.EnyChar.Max_Width, anitype.EnyChar.Max_Height, 
+					m_topVec[i]->GetObjectLevel()
+				);
 
 				m_render->DrawSolidRectGauge
 				(
 					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 20, m_topVec[i]->GetObjectPosZ(),
-					25, 5, 1.0f, 0.0f, 0.0f, 1.0f, static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()),
+					25, 5, 
+					1.0f, 0.0f, 0.0f, 1.0f, 
+					static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()),
 					m_topVec[i]->GetObjectLevel()
 				);
 			}

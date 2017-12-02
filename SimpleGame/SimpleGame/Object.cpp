@@ -117,6 +117,70 @@ void Object::SetBulletObjectTime(float time)
 	m_bulletTime += (time / 1000.0f);
 }
 
+bool Object::IsCanCharAniToNext()
+{
+	++m_aniTimeCnt;
+
+	if (m_aniTimeCnt >= CHAR_MOVE_PER_FRAME)
+	{
+		m_aniTimeCnt = 0;
+		return true;
+	}
+
+	return false;
+}
+
+void Object::SetCharAniMove(Type type)
+{
+	AniType anitype;
+
+	aniMove.w_move += 1;
+
+	if (type == Type::My_OBJECT_CHARACTER)
+	{
+		if (aniMove.w_move >= anitype.MyChar.Max_Width &&  aniMove.h_move < anitype.MyChar.Max_Height)
+		{
+			aniMove.w_move = 0; 
+			aniMove.h_move += 1;
+		}
+			
+		if (aniMove.h_move >= anitype.MyChar.Max_Height && aniMove.w_move >= anitype.MyChar.Max_Width)
+		{
+			aniMove.w_move = 0;
+			aniMove.h_move = 0;
+		}
+					
+	}
+
+	if (type == Type::Enemy_OBJECT_CHARACTER)
+	{
+		if (aniMove.w_move >= anitype.MyChar.Max_Width &&  aniMove.h_move < anitype.MyChar.Max_Height)
+		{
+			aniMove.w_move = 0;
+			aniMove.h_move += 1;
+		}
+
+		if (aniMove.h_move >= anitype.MyChar.Max_Height && aniMove.w_move >= anitype.MyChar.Max_Width)
+		{
+			aniMove.w_move = 0;
+			aniMove.h_move = 0;
+		}
+			
+	}
+}
+
+bool Object::IsCanCreateBulletTime(float time)
+{
+	m_createBulletTime += (time / 1000.0f);
+
+	if (m_createBulletTime >= BuildingCreateBulletCoolTime)
+	{
+		m_createBulletTime = 0.0f;
+		return true;
+	}
+	return false;
+}
+
 void Object::SetCreateArrowFlag(bool flag)
 {
 	m_createArrow = flag;
@@ -215,6 +279,11 @@ Vec3f Object::GetObjectDirection() const
 float Object::GetBulletObjectTime() const
 {
 	return m_bulletTime;
+}
+
+AniMove Object::GetCharacterAniMove() const
+{
+	return aniMove;
 }
 
 void Object::Update(float elapsedTime)

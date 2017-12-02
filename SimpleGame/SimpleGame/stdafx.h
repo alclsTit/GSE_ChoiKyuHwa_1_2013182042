@@ -13,10 +13,10 @@
 #define WINDOW_WIDTH 500
 #define WINDOW_HEIGHT 800
 
-#define BuildingCoolTime 3
-#define ArrowCoolTime 3
-#define MyCharacterCoolTime 7
-#define EnyCharacterCoolTime 5
+#define BuildingCreateBulletCoolTime 3
+#define ArrowCoolTime 2
+#define MyCharacterCoolTime 2
+#define EnyCharacterCoolTime 4
 
 #define BulletLife 20
 #define ArrowLife 10
@@ -24,6 +24,10 @@
 
 #define MAX_ANI_FRAME_WIDTH 8
 #define MAX_ANI_FRAME_HEIGHT 2
+
+#define CHAR_MOVE_PER_FRAME 60
+
+#define BUILDING_MAX_NUMBER 3
 
 enum class Type 
 {
@@ -35,6 +39,18 @@ enum class Type
 	My_OBJECT_CHARACTER,
 	My_OBJECT_BULLET,
 	My_OBJECT_ARROW,
+};
+
+struct AniSprites
+{
+	int Max_Width;
+	int Max_Height;
+};
+
+struct AniType
+{
+	AniSprites MyChar{ 8,2 };
+	AniSprites EnyChar{ 3,3 };
 };
 
 struct Level
