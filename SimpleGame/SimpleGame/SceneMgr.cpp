@@ -9,6 +9,9 @@ CSceneMgr::CSceneMgr()
 
 	m_obj = new CRectangle();
 
+	//¹è°æÀ½¾Ç
+	m_backBGM = new CreateSounds("./Sounds/BackgroundBGM/MapleStoryTitle.mp3", 1.0f, true);
+
 	//¾Æ±º ºôµù - ¹ÙÅÒ
 	this->CreateBuilding(m_rectVec, { -150.0f, -250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
 						100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/Objects/minion.png");
@@ -245,6 +248,7 @@ void CSceneMgr::Update(float elapsedTime)
 		m_enyCharTime = 0.0f;
 	}
 
+	
 	/*
 	if (m_buildingTime >= BuildingCoolTime)
 	{
@@ -458,11 +462,14 @@ void CSceneMgr::Draw()
 		0.4f
 	);
 
+	DrawSceneText(-120.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, 1.0f, 1.0f, 1.0f, "Created by monoTree");
 
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
 		if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
 		{
+			float LeftHp = static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife());
+
 			m_render->DrawTexturedRect
 			(
 				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), 
@@ -479,6 +486,9 @@ void CSceneMgr::Draw()
 				static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
 				m_rectVec[i]->GetObjectLevel()
 			);
+
+			if (static_cast<int>(LeftHp) % 20 == 0)
+				m_render->SetSceneTransform(-10.0f, 10.0f, 1.0f, 1.0f);
 		}
 		else
 		{
@@ -534,6 +544,8 @@ void CSceneMgr::Draw()
 	{
 		if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BUILDING)
 		{
+			float LeftHp = static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife());
+
 			m_render->DrawTexturedRect
 			(
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), 
@@ -545,11 +557,14 @@ void CSceneMgr::Draw()
 			m_render->DrawSolidRectGauge
 			(
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 50, m_topVec[i]->GetObjectPosZ(),
-				100, 10, 
-				1.0f, 0.0f, 0.0f, 1.0f, 
-				static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife()) ,
+				100, 10,
+				1.0f, 0.0f, 0.0f, 1.0f,
+				LeftHp,
 				m_topVec[i]->GetObjectLevel()
 			);
+
+			if (static_cast<int>(LeftHp) % 20 == 0)
+				m_render->SetSceneTransform(-10.0f, 10.0f, 1.0f, 1.0f);
 		}
 		else
 		{
@@ -603,6 +618,11 @@ void CSceneMgr::Draw()
 	}
 }
 
+
+void CSceneMgr::DrawSceneText(float posX, float posY, void *font, float r, float g, float b, char* text)
+{
+	m_render->DrawTextW(posX, posY, font, r, g, b, text);
+}
 
 CSceneMgr::~CSceneMgr()
 {

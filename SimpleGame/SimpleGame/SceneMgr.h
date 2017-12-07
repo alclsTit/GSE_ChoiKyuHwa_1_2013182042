@@ -3,9 +3,9 @@
 #include "Rectangle.h"
 #include "ObjectCollision.h"
 #include "Renderer.h"
+#include "CreateSounds.h"
 #include <vector>
 #include <random>
-
 
 class CSceneMgr
 {
@@ -17,6 +17,8 @@ private:
 	CRectangle *m_building{ nullptr };
 
 	CRectangle *m_obj{ nullptr };
+
+	CreateSounds *m_backBGM{ nullptr };
 
 	bool m_flagOut{ false };
 
@@ -56,6 +58,10 @@ public:
 	void Update(float elapsedTime);
 	void Draw();
 	int GetCurRectNum() const { return m_rectVec.size(); }
+
+	void DrawSceneText(float posX, float posY, void *font, float r, float g, float b, char* text);
+
 	~CSceneMgr();
+
 };
 
