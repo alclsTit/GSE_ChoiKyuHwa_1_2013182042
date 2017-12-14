@@ -112,6 +112,7 @@ bool Object::SetObjectCharacterCoolTime(float time)
 	return false;
 }
 
+//파티클 생명주기
 void Object::SetBulletObjectTime(float time)
 {
 	m_bulletTime += (time / 1000.0f);

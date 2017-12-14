@@ -12,6 +12,9 @@ CSceneMgr::CSceneMgr()
 	//배경음악
 	m_backBGM = new CreateSounds("./Sounds/BackgroundBGM/MapleStoryTitle.mp3", 1.0f, true);
 
+	//기후
+	m_weather = new CWeatherEffect("./Resources/Particles/snow.png", m_render);
+
 	//아군 빌딩 - 바텀
 	this->CreateBuilding(m_rectVec, { -150.0f, -250.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f },
 						100, 500, 5000, Type::My_OBJECT_BUILDING, "./Resources/Objects/minion.png");
@@ -38,7 +41,7 @@ CSceneMgr::CSceneMgr()
 	m_texAnimationSp = m_render->CreatePngTexture("./Resources/Characters/Character01.png");
 	m_texEnyAnimationSp = m_render->CreatePngTexture("./Resources/Characters/Character02.png");
 
-	m_texParticle = m_render->CreatePngTexture("./Resources/Particles/particle01.png");
+	m_texParticle = m_render->CreatePngTexture("./Resources/Particles/particle03.png");
 	m_texEnyParticle = m_render->CreatePngTexture("./Resources/Particles/particle02.png");
 }
 
@@ -228,6 +231,8 @@ void CSceneMgr::Update(float elapsedTime)
 	//내 캐릭터, 상대 캐릭터, 빌딩 주기 생성
 
 	//m_buildingTime += (elapsedTime / 1000.0f);
+	m_weather->Update(elapsedTime);
+
 	m_enyCharTime += (elapsedTime / 1000.0f);
 
 	if (m_createMyChar)
@@ -304,12 +309,14 @@ void CSceneMgr::Update(float elapsedTime)
 		}
 		else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BULLET)
 		{
+			//0으로 초기화된 불렛의 타이머에 시간값을 더한다.
 			m_rectVec[i]->SetBulletObjectTime(elapsedTime);
 		}
 		else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
 		{
 			if (m_rectVec[i]->IsCanCreateBulletTime(elapsedTime))
-				this->CreateBullet(
+				this->CreateBullet
+				(
 					m_rectVec[i]->GetObjectPosXYZ(), m_rectVec[i]->GetObjectColorRGBA(), Type::My_OBJECT_BULLET
 				);
 		}
@@ -333,7 +340,8 @@ void CSceneMgr::Update(float elapsedTime)
 		else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BUILDING)
 		{
 			if (m_topVec[i]->IsCanCreateBulletTime(elapsedTime))
-				this->CreateBullet(
+				this->CreateBullet
+				(
 					m_topVec[i]->GetObjectPosXYZ(), m_topVec[i]->GetObjectColorRGBA(), Type::Enemy_OBJECT_BULLET
 				);
 		}
@@ -423,6 +431,13 @@ void CSceneMgr::Update(float elapsedTime)
 	{
 		for (auto iter = m_rectVec.begin(); iter != m_rectVec.end();)
 		{
+			//파티클 삭제
+			//if ((*iter)->GetObjectType() == Type::My_OBJECT_BULLET)
+			//{
+			//	if ((*iter)->GetBulletObjectTime() >= MAX_PARTICLE_LIVE_TIME)
+			//		iter = m_rectVec.erase(iter);
+			//}
+
 			if ((*iter)->GetObjectLife() <= 0)
 				iter = m_rectVec.erase(iter);
 			else
@@ -434,6 +449,13 @@ void CSceneMgr::Update(float elapsedTime)
 	{
 		for (auto iter = m_topVec.begin(); iter != m_topVec.end();)
 		{
+			//파티클 삭제
+			//if ((*iter)->GetObjectType() == Type::My_OBJECT_BULLET)
+			//{
+			//	if ((*iter)->GetBulletObjectTime() >= MAX_PARTICLE_LIVE_TIME)
+			//		iter = m_topVec.erase(iter);
+			//}
+
 			if ((*iter)->GetObjectLife() <= 0)
 				iter = m_topVec.erase(iter);
 			else
@@ -464,12 +486,14 @@ void CSceneMgr::Draw()
 
 	DrawSceneText(-120.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, 1.0f, 1.0f, 1.0f, "Created by monoTree");
 
+	m_weather->Draw(m_render);
+
 	for (int i = 0; i < m_rectVec.size(); ++i)
 	{
 		if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_BUILDING)
 		{
 			float LeftHp = static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife());
-
+			
 			m_render->DrawTexturedRect
 			(
 				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY(), 
@@ -477,7 +501,7 @@ void CSceneMgr::Draw()
 				m_rectVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 1.0f, m_texMyBuilding,
 				m_rectVec[i]->GetObjectLevel()
 			);
-
+			
 			m_render->DrawSolidRectGauge
 			(
 				m_rectVec[i]->GetObjectPosX(), m_rectVec[i]->GetObjectPosY() + 50, m_rectVec[i]->GetObjectPosZ(),
@@ -486,7 +510,7 @@ void CSceneMgr::Draw()
 				static_cast<float>(m_rectVec[i]->GetObjectLife()) / static_cast<float>(m_rectVec[i]->GetObjectOriginalLife()),
 				m_rectVec[i]->GetObjectLevel()
 			);
-
+			
 			if (static_cast<int>(LeftHp) % 20 == 0)
 				m_render->SetSceneTransform(-10.0f, 10.0f, 1.0f, 1.0f);
 		}
@@ -501,7 +525,7 @@ void CSceneMgr::Draw()
 					1.0f, 1.0f, 1.0f, 1.0f,
 					-m_rectVec[i]->GetObjectDirection().x, -m_rectVec[i]->GetObjectDirection().y, 
 					m_texParticle,
-					m_rectVec[i]->GetBulletObjectTime()
+					m_rectVec[i]->GetBulletObjectTime(), m_rectVec[i]->GetObjectLevel()
 				);
 			}
 			else if (m_rectVec[i]->GetObjectType() == Type::My_OBJECT_CHARACTER)
@@ -545,7 +569,7 @@ void CSceneMgr::Draw()
 		if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_BUILDING)
 		{
 			float LeftHp = static_cast<float>(m_topVec[i]->GetObjectLife()) / static_cast<float>(m_topVec[i]->GetObjectOriginalLife());
-
+			
 			m_render->DrawTexturedRect
 			(
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), 
@@ -553,7 +577,7 @@ void CSceneMgr::Draw()
 				m_topVec[i]->GetSquareSize(), 1.0f, 1.0f, 1.0f, 1.0f, m_texEnemyBuilding,
 				m_topVec[i]->GetObjectLevel()
 			);
-
+			
 			m_render->DrawSolidRectGauge
 			(
 				m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY() + 50, m_topVec[i]->GetObjectPosZ(),
@@ -562,7 +586,7 @@ void CSceneMgr::Draw()
 				LeftHp,
 				m_topVec[i]->GetObjectLevel()
 			);
-
+			
 			if (static_cast<int>(LeftHp) % 20 == 0)
 				m_render->SetSceneTransform(-10.0f, 10.0f, 1.0f, 1.0f);
 		}
@@ -573,11 +597,11 @@ void CSceneMgr::Draw()
 				m_render->DrawParticle
 				(
 					m_topVec[i]->GetObjectPosX(), m_topVec[i]->GetObjectPosY(), m_topVec[i]->GetObjectPosZ(),
-					8.0f, 
-					1.0f, 1.0f, 1.0f, 1.0f, 
-					-m_topVec[i]->GetObjectDirection().x, -m_topVec[i]->GetObjectDirection().y, 
+					8.0f,
+					1.0f, 1.0f, 1.0f, 1.0f,
+					-m_topVec[i]->GetObjectDirection().x, -m_topVec[i]->GetObjectDirection().y,
 					m_texEnyParticle,
-					m_topVec[i]->GetBulletObjectTime()
+					m_topVec[i]->GetBulletObjectTime(), m_topVec[i]->GetObjectLevel()
 				);
 			}
 			else if (m_topVec[i]->GetObjectType() == Type::Enemy_OBJECT_CHARACTER)

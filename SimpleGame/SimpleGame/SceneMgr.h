@@ -4,6 +4,7 @@
 #include "ObjectCollision.h"
 #include "Renderer.h"
 #include "CreateSounds.h"
+#include "CWeatherEffect.h"
 #include <vector>
 #include <random>
 
@@ -19,6 +20,8 @@ private:
 	CRectangle *m_obj{ nullptr };
 
 	CreateSounds *m_backBGM{ nullptr };
+
+	CWeatherEffect *m_weather{ nullptr };
 
 	bool m_flagOut{ false };
 

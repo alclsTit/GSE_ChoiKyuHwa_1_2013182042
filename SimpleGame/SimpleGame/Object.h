@@ -47,6 +47,10 @@ protected:
 
 	//불렛 파티클이 시간주기마다 생성되도록(인자로 넘겨준 값)
 	float m_bulletTime{ 0.0f };
+	//float m_oriParticleAlpha{ 1.0f };
+	//float m_particleAlpha{ 1.0f };
+	//float m_decAlphaVal{ 0.0f };
+
 	//불렛의 생성주기를 위해 빌딩에 설정
 	float m_createBulletTime{ 0.0f };
 	
@@ -98,7 +102,7 @@ public:
 	Vec3f GetObjectDirection() const;
 	float GetBulletObjectTime() const;
 	AniMove GetCharacterAniMove() const;
-
+	
 	virtual void Update(float elapsedTime);
 
 	//void SetColor(float r, float g, float b, float alpha) { m_oColor.r = r; m_oColor.g = g; m_oColor.b = b; m_oColor.a = alpha; }
