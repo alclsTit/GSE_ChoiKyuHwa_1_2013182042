@@ -153,6 +153,21 @@ void Object::SetCharAniMove(Type type)
 					
 	}
 
+	if (type == Type::MY_OBJECT_AIR_CHARACTER)
+	{
+		if (aniMove.w_move >= anitype.MyAirChar.Max_Width &&  aniMove.h_move < anitype.MyAirChar.Max_Height)
+		{
+			aniMove.w_move = 0;
+			aniMove.h_move += 1;
+		}
+
+		if (aniMove.h_move >= anitype.MyAirChar.Max_Height && aniMove.w_move >= anitype.MyAirChar.Max_Width)
+		{
+			aniMove.w_move = 0;
+			aniMove.h_move = 0;
+		}
+	}
+
 	if (type == Type::Enemy_OBJECT_CHARACTER)
 	{
 		if (aniMove.w_move >= anitype.MyChar.Max_Width &&  aniMove.h_move < anitype.MyChar.Max_Height)
@@ -165,8 +180,7 @@ void Object::SetCharAniMove(Type type)
 		{
 			aniMove.w_move = 0;
 			aniMove.h_move = 0;
-		}
-			
+		}		
 	}
 }
 
@@ -180,6 +194,16 @@ bool Object::IsCanCreateBulletTime(float time)
 		return true;
 	}
 	return false;
+}
+
+void Object::SetCharParticleTime(float time)
+{
+	m_charParticleTime += (time / 1000.0f);
+}
+
+void Object::SetCharParticleSeta()
+{
+	m_charParticleAngle = (m_charParticleAngle + 1) % 360;
 }
 
 void Object::SetCreateArrowFlag(bool flag)
@@ -285,6 +309,16 @@ float Object::GetBulletObjectTime() const
 AniMove Object::GetCharacterAniMove() const
 {
 	return aniMove;
+}
+
+float Object::GetCharParticleTime() const
+{
+	return m_charParticleTime;
+}
+
+int Object::GetCharParticleSeta() const
+{
+	return m_charParticleAngle;
 }
 
 void Object::Update(float elapsedTime)

@@ -17,10 +17,12 @@
 #define ArrowCoolTime 2
 #define MyCharacterCoolTime 2
 #define EnyCharacterCoolTime 4
+#define MyAirCharacterCoolTime 4
 
 #define BulletLife 20
 #define ArrowLife 10
 #define CharacterLife 100
+#define AirCharacterLife 50
 
 #define MAX_ANI_FRAME_WIDTH 8
 #define MAX_ANI_FRAME_HEIGHT 2
@@ -52,6 +54,7 @@ enum class Type
 	My_OBJECT_CHARACTER,
 	My_OBJECT_BULLET,
 	My_OBJECT_ARROW,
+	MY_OBJECT_AIR_CHARACTER
 };
 
 struct AniSprites
@@ -64,6 +67,7 @@ struct AniType
 {
 	AniSprites MyChar{ 8,2 };
 	AniSprites EnyChar{ 3,3 };
+	AniSprites MyAirChar{ 4,2 };
 };
 
 struct Level

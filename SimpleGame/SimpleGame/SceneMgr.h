@@ -28,6 +28,7 @@ private:
 	float m_buildingTime{ 0.0f };
 	float m_enyCharTime{ 0.0f };
 	float m_myCharTime{ 0.0f };
+	float m_myAirCharTime{ 0.0f };
 
 	bool m_createMyChar{ false };
 	bool m_cancCreChar{ true };
@@ -35,6 +36,8 @@ private:
 	int m_hpDownTerm{ 0 };
 	int m_myCharTag{ 0 };
 	int m_enyCharTag{ 0 };
+	int m_myAirCharTag{ 0 };
+	int m_t_seta{ 0 };
 
 	Renderer *m_render{ nullptr };
 
@@ -44,12 +47,17 @@ private:
 
 	GLuint m_texAnimationSp;
 	GLuint m_texEnyAnimationSp;
+	GLuint m_texAirAnimationSp;
 
 	GLuint m_texParticle;
 	GLuint m_texEnyParticle;
+	GLuint m_texMyCharParticle;
+	GLuint m_texEnemyCharParticle;
+	GLuint m_texMyAirCharParticle;
 
 	Level m_objLevel;
 	
+	int m_tswing{ 0 };
 public:
 	CSceneMgr();
 	void CreateBuilding(vector<CRectangle*>& vec, Vec3f pos, Color color, 
@@ -62,7 +70,9 @@ public:
 	void Draw();
 	int GetCurRectNum() const { return m_rectVec.size(); }
 
+	void CreateMyAirCharacter();
 	void DrawSceneText(float posX, float posY, void *font, float r, float g, float b, char* text);
+	float GetLength(const CRectangle& v1, const CRectangle& v2);
 
 	~CSceneMgr();
 

@@ -51,8 +51,11 @@ protected:
 	//float m_particleAlpha{ 1.0f };
 	//float m_decAlphaVal{ 0.0f };
 
+	float m_charParticleTime{ 0.0f };
+
 	//불렛의 생성주기를 위해 빌딩에 설정
 	float m_createBulletTime{ 0.0f };
+	int m_charParticleAngle{ 0 };
 	
 public:
 	Object();
@@ -84,6 +87,9 @@ public:
 	bool IsCanCharAniToNext();
 	void SetCharAniMove(Type type);
 	bool IsCanCreateBulletTime(float time);
+	void SetCharParticleTime(float time);
+	void SetCharParticleSeta();
+
 
 	float GetObjectPosX() const;
 	float GetObjectPosY() const;
@@ -102,6 +108,8 @@ public:
 	Vec3f GetObjectDirection() const;
 	float GetBulletObjectTime() const;
 	AniMove GetCharacterAniMove() const;
+	float GetCharParticleTime() const;
+	int GetCharParticleSeta() const;
 	
 	virtual void Update(float elapsedTime);
 
